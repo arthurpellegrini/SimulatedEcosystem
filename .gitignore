@@ -1,6 +1,7 @@
 /cmake-build*
 /.idea
 /.vscode
+/software_design/generated_code
 
 # Prerequisites
 *.d
