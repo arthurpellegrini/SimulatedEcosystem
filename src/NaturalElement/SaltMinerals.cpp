@@ -1,16 +1,15 @@
-/**
- * Project Untitled
- */
-
-
 #include "SaltMinerals.h"
 
-/**
- * SaltMinerals implementation
- */
+SaltMinerals::SaltMinerals() : age(0) {}
 
-SaltMinerals::SaltMinerals() {
+string SaltMinerals::display() const {
+ return "*";
+}
 
- age = 0;
+void SaltMinerals::incrementAge() {
+ age++;
+}
 
+bool SaltMinerals::shouldTransform() const {
+ return age >= lifespan;
 }

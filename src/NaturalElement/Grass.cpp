@@ -1,12 +1,5 @@
-/**
- * Project Untitled
- */
-
-
 #include "Grass.h"
 
-/**
- * Grass implementation
- */
-
-
+string Grass::display() const {
+    return ";";
+}

@@ -1,29 +1,18 @@
-/**
- * Project Untitled
- */
-
-
-#ifndef _SALTMINERALS_H
-#define _SALTMINERALS_H
+#ifndef SALTMINERALS_H
+#define SALTMINERALS_H
 
 #include "NaturalElement.h"
 
-
-class SaltMinerals: public NaturalElement {
+class SaltMinerals : public NaturalElement {
+    static const int lifespan = 1;
+    int age;
 
 public:
     SaltMinerals();
 
-    std::string display() const override {
-        return ",";
-    }
-
-private: 
-    static int lifespan;
-    int age;
+    string display() const override;
+    void incrementAge();
+    bool shouldTransform() const;
 };
 
-int SaltMinerals::lifespan = 1;
-
-
-#endif //_SALTMINERALS_H
+#endif // SALTMINERALS_H
