@@ -10,6 +10,12 @@
 
 
 class Wolf: public Animal {
+
+public:
+    std::string display() const override {
+        return "W";
+    }
+
 private: 
     static int satiety;
     static int lifespan;

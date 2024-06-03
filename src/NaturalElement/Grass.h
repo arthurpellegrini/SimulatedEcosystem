@@ -10,6 +10,11 @@
 
 
 class Grass: public NaturalElement {
+
+
+ std::string display() const override {
+  return ";";
+ }
 };
 
 #endif //_GRASS_H

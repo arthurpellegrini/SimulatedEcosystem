@@ -1,11 +1,10 @@
 #include <iostream>
 
-#include "Simulation.h"
+#include "src/Simulation/Simulation.h"
 
 int main() {
     try {
         Simulation simulation;
-
         simulation.displayField();
 
     }

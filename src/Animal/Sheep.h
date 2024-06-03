@@ -10,9 +10,15 @@
 
 
 class Sheep: public Animal {
+
+public:
+    std::string display() const override {
+        return "S";
+    }
+
 private: 
     static int satiety;
-    static int  lifespan;
+    static int lifespan;
     static int fov;
 };
 

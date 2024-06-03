@@ -18,10 +18,9 @@ Universe::Universe(std::vector<int> dimensions) : dimensions(dimensions) {
  }
 
  // Remplir le tableau avec des valeurs (par exemple, des valeurs incrémentales)
- int value = 1;
  for (int i = 0; i < dimensions[0]; i++) {
   for (int j = 0; j < dimensions[1]; j++) {
-   field[i][j] = value++;
+   //field[i][j] = Case({i,j});
   }
  }
 }
@@ -43,6 +42,6 @@ Cell [] Universe::neighborhood(Cell cell) {
 }*/
 
 
-std::vector<std::vector<int>>& Universe::getField() {
+std::vector<std::vector<Cell>>& Universe::getField() {
  return field;
 }

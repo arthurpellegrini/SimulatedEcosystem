@@ -37,3 +37,7 @@ void Animal::breed() {
 void Animal::die() {
     return;
 }
+
+std::ostream& operator << (std::ostream &os, Animal &s) {
+ return (os << 'A' << std::endl);
+}

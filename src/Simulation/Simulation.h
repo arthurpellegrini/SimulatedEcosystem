@@ -6,7 +6,7 @@
 #ifndef _SIMULATION_H
 #define _SIMULATION_H
 #include "SimulationView.h"
-#include "Universe.h"
+#include "../Universe/Universe.h"
 
 class Simulation {
 public:
