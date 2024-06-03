@@ -5,20 +5,26 @@
 
 #ifndef _UNIVERSE_H
 #define _UNIVERSE_H
+#include <vector>
 
 class Universe {
-public: 
+public:
+    Universe(std::vector<int> dimensions);
     
-void nextGeneration();
+    void nextGeneration();
+    std::vector<std::vector<int>>& getField();
     
 /**
  * @param cell
- */
+
 Cell [] neighborhood(Cell cell);
+*/
 private: 
-    static vect size;
+    std::vector<int> dimensions;
     int generations;
     bool isDied;
+
+    std::vector<std::vector<int>> field;
 };
 
 #endif //_UNIVERSE_H
