@@ -1,25 +1,26 @@
-/**
- * Project Untitled
- */
-
-
-#ifndef _WOLF_H
-#define _WOLF_H
+#ifndef WOLF_H
+#define WOLF_H
 
 #include "Animal.h"
+#include <string>
 
-
-class Wolf: public Animal {
-
+class Wolf : public Animal {
 public:
-    std::string display() const override {
-        return "W";
-    }
+    Wolf(Gender gender);
 
-private: 
-    static int satiety;
-    static int lifespan;
-    static int fov;
+    std::string display() const override;
+    void eat() override;
+    void move() override;
+    void breed() override;
+    void die() override;
+
+    static int getSatiety();
+    static int getLifespan();
+
+private:
+    static const int satiety;
+    static const int lifespan;
+    static const int fov;
 };
 
-#endif //_WOLF_H
+#endif // WOLF_H
