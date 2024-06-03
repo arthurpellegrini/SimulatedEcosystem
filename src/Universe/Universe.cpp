@@ -45,3 +45,12 @@ Cell [] Universe::neighborhood(Cell cell) {
 std::vector<std::vector<Cell>>& Universe::getField() {
  return field;
 }
+
+bool Universe::getisDead() {
+ return isDied;
+}
+
+void Universe::setisDead(bool isDead)  {
+ isDied = isDead;// faut rename
+}
+
