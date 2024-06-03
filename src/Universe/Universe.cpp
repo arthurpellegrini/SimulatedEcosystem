@@ -37,10 +37,6 @@ bool Universe::isDead() {
     return _isDead;
 }
 
-void Universe::setDead(bool isDead) {
-    _isDead = isDead;
-}
-
 void Universe::processCell(int x, int y) {
     Cell& cell = _cells[x][y];
     Cell& nextCell = _nextCells[x][y];

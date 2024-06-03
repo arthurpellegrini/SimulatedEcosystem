@@ -12,8 +12,8 @@ using namespace std;
 class Cell {
     bool _isEmpty;
     vector<int> _position;
-    unique_ptr<Animal> _animalOnCell;
-    unique_ptr<NaturalElement> _naturalElementOnCell;
+    shared_ptr<Animal> _animalOnCell;
+    shared_ptr<NaturalElement> _naturalElementOnCell;
 
     void updateIsEmpty();
 
