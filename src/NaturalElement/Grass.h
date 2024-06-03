@@ -1,20 +1,11 @@
-/**
- * Project Untitled
- */
-
-
-#ifndef _GRASS_H
-#define _GRASS_H
+#ifndef GRASS_H
+#define GRASS_H
 
 #include "NaturalElement.h"
 
-
-class Grass: public NaturalElement {
-
-
- std::string display() const override {
-  return ";";
- }
+class Grass : public NaturalElement {
+public:
+ string display() const override;
 };
 
-#endif //_GRASS_H
+#endif // GRASS_H

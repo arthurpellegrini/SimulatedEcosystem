@@ -5,7 +5,6 @@
 int main() {
     try {
         Simulation simulation;
-
         simulation.start();
     }
     catch (const std::exception& e) {

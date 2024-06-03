@@ -1,37 +1,33 @@
-/**
- * Project Untitled
- */
+#ifndef UNIVERSE_H
+#define UNIVERSE_H
 
-
-#ifndef _UNIVERSE_H
-#define _UNIVERSE_H
 #include <vector>
-
 #include "Cell.h"
 
+using namespace std;
 
 class Universe {
 public:
-    Universe(std::vector<int> dimensions);
-    
+    Universe(const vector<int>& size);
+
     void nextGeneration();
-    std::vector<std::vector<Cell>>& getField();
+    vector<vector<Cell>>& getCells();
+    bool isDead();
+    int getGenerations();
 
-    //get et setteur de isDead
-    bool getisDead();
-    void setisDead(bool isDead);
-    
-/**
- * @param cell
+private:
+    vector<int> _size;
+    int _generations;
+    bool _isDead;
 
-Cell [] neighborhood(Cell cell);
-*/
-private: 
-    std::vector<int> dimensions;
-    int generations;
-    bool isDied; // pas bon faut rename est mouru
+    vector<vector<Cell>> _cells;
+    vector<vector<Cell>> _nextCells;
 
-    std::vector<std::vector<Cell>> field;
+    void processCell(int x, int y);
+    void processSheep(int x, int y, Cell& cell, Cell& nextCell);
+    void processWolf(int x, int y, Cell& cell, Cell& nextCell);
+    void processGrass(int x, int y, Cell& cell, Cell& nextCell);
+    void processMinerals(int x, int y, Cell& cell, Cell& nextCell);
 };
 
-#endif //_UNIVERSE_H
+#endif // UNIVERSE_H

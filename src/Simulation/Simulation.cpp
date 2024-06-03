@@ -1,96 +1,69 @@
-/**
- * Project Untitled
- */
+#include "SimulationView.h"
+#include <iostream>
+#include <iomanip>
+#include <limits>
 
+using namespace std;
 
-#include "Simulation.h"
-
-#include <thread>
-#include <chrono>
-#include <conio.h> // Pour _kbhit et _getch
-
-/**
- * Simulation implementation
- */
-// Constructeur
-
-Simulation::Simulation() : universe(nullptr) {
-
-    simulationView = new SimulationView();
-    universe = new Universe(simulationView->requestDimensions());
-}
-
-
-/**
- * @return void
- */
-void Simulation::start() {
-    while (!universe->getisDead()) {
-        if (_kbhit()) { // Vérifie si une touche a été pressée
-            _getch();// Lit la touche pressée pour vider le buffer
-            pause(); // Appelle la fonction pause
+void SimulationView::displayCells(Universe& universe) const {
+    const auto& cells = universe.getCells();
+    for (const auto& row : cells) {
+        printSeparator(row.size());
+        for (const auto& element : row) {
+            cout << "| " << element << " ";
         }
+        cout << "|\n";
+    }
+    printSeparator(cells[0].size());
+}
 
-        if (!universe->getisDead()) {
+vector<int> SimulationView::requestDimensions() const {
+    int x = getValidIntegerInput("Entrez le nombre de lignes (x) :");
+    int y = getValidIntegerInput("Entrez le nombre de colonnes (y) :");
+    cout << '\n';
+    return {x, y};
+}
 
-            std::cout<< "j'ai mis en commentaire les vrais fonctions a decommenter. Qaund ca sera finis"<< std::endl;
-            //universe->nextGeneration();
-            //simulationView->displayField(universe->getField());
+void SimulationView::printSeparator(int cols) const {
+    cout << '+';
+    for (int i = 0; i < cols; ++i) {
+        cout << "----+";
+    }
+    cout << '\n';
+}
+
+int SimulationView::getValidIntegerInput(const string& prompt) const {
+    int value;
+    cout << prompt;
+    while (!(cin >> value) || value <= 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrée invalide. Veuillez entrer un nombre entier positif :";
+    }
+    return value;
+}
+
+char SimulationView::displayPauseMenu() const {
+    char choice;
+    cout << "Simulation en pause:" << endl;
+    cout << "Options: r => resume, e => exit, s => save, l => load" << endl;
+
+    while (true) {
+        choice = cin.get();
+        if (choice == '\n' || choice == '\r') {
+            continue;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Attend 0,2 secondes
+        if (choice == 'r' || choice == 'e' || choice == 's' || choice == 'l') {
+            break;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entree invalide. Veuillez entrer un caractere unique parmi les options r, e, s, l :" << endl;
     }
+
+    return choice;
 }
 
-/**
- * @return void
- */
-void Simulation::pause() {
-    switch (simulationView->displayPauseMenu()) {
-        case 'r' : break;
-        case 'e' :
-            stop();
-            break;
-        case 's' :
-            save();
-            break;
-        case 'l' :
-            load();
-            break;
-        default: pause();
-    }
-}
-
-/**
- * @return void
- */
-void Simulation::resume() { // sert a rien au final
-}
-
-/**
- * @return void
- */
-void Simulation::stop() {
-    universe->setisDead(true);
-    simulationView->displayEndSimulation(*universe);
-}
-
-/**
- * @return void
- */
-void Simulation::save() {
-    std::cout<< "SAVE on ajoute le methode de clement"<< std::endl;
-}
-
-/**
- * @return void
- */
-void Simulation::load() {
-    std::cout<< "LAOD on ajoute le methode de clement"<< std::endl;
-}
-
-/**
- * @return void
- */
-void Simulation::displayField() {
-    simulationView->displayField(universe->getField());
+void SimulationView::displayEndSimulation(Universe& universe) const {
+    cout << "La simulation est terminée après " << universe.getGenerations() << " générations." << endl;
 }

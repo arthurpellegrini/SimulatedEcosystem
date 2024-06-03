@@ -1,25 +1,27 @@
-/**
- * Project Untitled
- */
-
-
-#ifndef _SHEEP_H
-#define _SHEEP_H
+#ifndef SHEEP_H
+#define SHEEP_H
 
 #include "Animal.h"
 
 
-class Sheep: public Animal {
-
+class Sheep : public Animal {
 public:
-    std::string display() const override {
-        return "S";
-    }
+    Sheep(Gender gender);
 
-private: 
-    static int satiety;
-    static int lifespan;
-    static int fov;
+    string display() const override;
+    void eat() override;
+    void move() override;
+    void breed() override;
+    void die() override;
+
+    int getSatiety();
+    static int getLifespan();
+
+private:
+    int _satiety;
+    static const int _maxSatiety;
+    static const int _lifespan;
+    static const int _fov;
 };
 
-#endif //_SHEEP_H
+#endif // SHEEP_H

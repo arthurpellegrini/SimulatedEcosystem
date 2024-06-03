@@ -1,18 +1,14 @@
-/**
- * Project Untitled
- */
+#ifndef NATURALELEMENT_H
+#define NATURALELEMENT_H
 
+#include <string>
 
-#ifndef _NATURALELEMENT_H
-#define _NATURALELEMENT_H
-#include <iostream>
+using namespace std;
 
 class NaturalElement {
-
 public:
- virtual  ~NaturalElement()  = default;
-
- virtual std::string display() const = 0;
+ virtual ~NaturalElement() = default;
+ virtual string display() const = 0;
 };
 
-#endif //_NATURALELEMENT_H
+#endif // NATURALELEMENT_H

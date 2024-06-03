@@ -1,43 +1,41 @@
-/**
- * Project Untitled
- */
-
-
 #include "Animal.h"
 
-/**
- * Animal implementation
- */
+const int Animal::_maxSatiety = 25;
 
+Animal::Animal(Gender gender) : _age(0), _gender(gender), _satiety(_maxSatiety) {}
 
-/**
- * @return void
- */
-void Animal::eat() {
-    return;
+int Animal::getAge() const {
+ return _age;
 }
 
-/**
- * @return void
- */
-void Animal::move() {
-    return;
+Gender Animal::getGender() const {
+ return _gender;
 }
 
-/**
- * @return void
- */
-void Animal::breed() {
-    return;
+int Animal::getSatiety() const {
+ return _satiety;
 }
 
-/**
- * @return void
- */
-void Animal::die() {
-    return;
+void Animal::increaseAge() {
+ _age++;
 }
 
-std::ostream& operator << (std::ostream &os, Animal &s) {
- return (os << 'A' << std::endl);
+void Animal::resetSatiety(int value) {
+ _satiety = value;
+}
+
+void Animal::decreaseSatiety() {
+ if (_satiety > 0) {
+  _satiety--;
+ }
+}
+
+Animal::~Animal() {}
+
+string Animal::display() const {
+ return "A";
+}
+
+ostream& operator<<(ostream &os, const Animal &animal) {
+ return os << animal.display();
 }

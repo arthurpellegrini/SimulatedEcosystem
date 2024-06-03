@@ -1,56 +1,99 @@
-/**
- * Project Untitled
- */
-
-
 #include "Universe.h"
+#include "../Animal/Wolf.h"
+#include "../Animal/Sheep.h"
+#include "../NaturalElement/Grass.h"
+#include "../NaturalElement/SaltMinerals.h"
 
-/**
- * Universe implementation
- */
-Universe::Universe(std::vector<int> dimensions) : dimensions(dimensions) {
- // Initialisation du tableau
- //
+Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
+    _cells.resize(size[0], vector<Cell>(size[1]));
+    _nextCells.resize(size[0], vector<Cell>(size[1]));
 
- field.resize(dimensions[0]);
- for (int i = 0; i < dimensions[0]; i++) {
-  field[i].resize(dimensions[1]);
- }
-
- // Remplir le tableau avec des valeurs (par exemple, des valeurs incrémentales)
- for (int i = 0; i < dimensions[0]; i++) {
-  for (int j = 0; j < dimensions[1]; j++) {
-   //field[i][j] = Case({i,j});
-  }
- }
+    // Todo: Random generation of initial cells
 }
 
-
-/**
- * @return void
- */
 void Universe::nextGeneration() {
-    return;
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            processCell(i, j);
+        }
+    }
+    _cells = move(_nextCells);
+    _nextCells.resize(_size[0], vector<Cell>(_size[1]));
+    _generations++;
 }
 
-/**
- * @param cell
- * @return Cell []
-
-Cell [] Universe::neighborhood(Cell cell) {
-    return null;
-}*/
-
-
-std::vector<std::vector<Cell>>& Universe::getField() {
- return field;
+vector<vector<Cell>>& Universe::getCells() {
+    return _cells;
 }
 
-bool Universe::getisDead() {
- return isDied;
+bool Universe::isDead() {
+    return _isDead;
 }
 
-void Universe::setisDead(bool isDead)  {
- isDied = isDead;// faut rename
+void Universe::processCell(int x, int y) {
+    Cell& cell = _cells[x][y];
+    Cell& nextCell = _nextCells[x][y];
+
+    if (cell.getAnimal() != nullptr) {
+        if (dynamic_cast<Sheep*>(cell.getAnimal())) {
+            processSheep(x, y, cell, nextCell);
+        } else if (dynamic_cast<Wolf*>(cell.getAnimal())) {
+            processWolf(x, y, cell, nextCell);
+        }
+    } else if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
+        processGrass(x, y, cell, nextCell);
+    } else if (dynamic_cast<SaltMinerals*>(cell.getNaturalElement())) {
+        processMinerals(x, y, cell, nextCell);
+    }
 }
 
+void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
+    Sheep* sheep = dynamic_cast<Sheep*>(cell.getAnimal());
+    sheep->increaseAge();
+    sheep->decreaseSatiety();
+
+    if (sheep->getAge() > Sheep::getLifespan() || sheep->getSatiety() <= 0) {
+        nextCell.addNaturalElement(make_unique<SaltMinerals>());
+        cell.removeAnimal();
+        return;
+    }
+
+    // Eating logic
+    if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
+        sheep->eat();
+        cell.removeNaturalElement();
+    }
+
+    // Breeding logic
+    // ...
+}
+
+void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
+    Wolf* wolf = dynamic_cast<Wolf*>(cell.getAnimal());
+    wolf->increaseAge();
+    wolf->decreaseSatiety();
+
+    if (wolf->getAge() > Wolf::getLifespan() || wolf->getSatiety() <= 0) {
+        nextCell.addNaturalElement(make_unique<SaltMinerals>());
+        cell.removeAnimal();
+        return;
+    }
+
+    // Eating logic
+    // ...
+
+    // Breeding logic
+    // ...
+}
+
+void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
+    nextCell.addNaturalElement(make_unique<Grass>());
+}
+
+void Universe::processMinerals(int x, int y, Cell& cell, Cell& nextCell) {
+    nextCell.addNaturalElement(make_unique<Grass>());
+}
+
+int Universe::getGenerations() {
+    return _generations;
+}

@@ -1,65 +1,67 @@
-/**
- * Project Untitled
- */
-
-
 #include "Cell.h"
-
 #include "../NaturalElement/Grass.h"
 
-/**
- * Case implementation
- */
-Cell::Cell(const std::vector<int> &position) : position(position){
-
- naturalElementOnCase = new Grass();
- animalOnCase = nullptr;
- getSetEmpty(true);
-
+Cell::Cell(const vector<int>& position) :
+    _isEmpty(true),
+    _position(position),
+    _animal(nullptr),
+    _natural_element(make_unique<Grass>())
+{
+ updateIsEmpty();
 }
 
-/**
- *@param bool toSet, if true we are ajusting the variable else we are juste getting it
- * @return bool
- */
-bool Cell::getSetEmpty(bool toSet) {
-
-  if(toSet) {
-   isEmpty = (animalOnCase == nullptr && naturalElementOnCase == nullptr);
-
-  }
-
- return isEmpty;
+void Cell::addAnimal(unique_ptr<Animal> animal) {
+ _animal = move(animal);
+ updateIsEmpty();
 }
 
-/**
- *@param Animal, we are assigning an Animal to this Case
- * @return void
- */
-bool Cell::addAnimal(Animal* animal) {
- animalOnCase = animal;
-
- return getSetEmpty(true);
+void Cell::removeAnimal() {
+ _animal.reset();
+ updateIsEmpty();
 }
 
-
-/**
- *@param NaturalElement, we are assigning an NaturalElement to this Case
- * @return void
- */
-bool Cell::addNaturalElement(NaturalElement* NaturalElement) {
- naturalElementOnCase = NaturalElement;
-
- return getSetEmpty(true);
+void Cell::addNaturalElement(unique_ptr<NaturalElement> naturalElement) {
+ _natural_element = move(naturalElement);
+ updateIsEmpty();
 }
 
-std::ostream& operator << (std::ostream &os, const Cell &s) {
+void Cell::removeNaturalElement() {
+ _natural_element.reset();
+ updateIsEmpty();
+}
 
- if(s.animalOnCase != nullptr) {
-  os <<s.animalOnCase->display();
+void Cell::updateIsEmpty() {
+ _isEmpty = (!_animal && !_natural_element);
+}
+
+bool Cell::isEmpty() const {
+ return _isEmpty;
+}
+
+vector<int> Cell::getPosition() const {
+ return _position;
+}
+
+Animal* Cell::getAnimal() const {
+ return _animal.get();
+}
+
+NaturalElement* Cell::getNaturalElement() const {
+ return _natural_element.get();
+}
+
+ostream& operator<<(ostream& os, const Cell& cell) {
+ if (cell._animal) {
+  os << cell._animal->display();
+ } else {
+  os << " ";
  }
- if(s.naturalElementOnCase != nullptr) {
-  os <<s.naturalElementOnCase->display();
+
+ if (cell._natural_element) {
+  os << cell._natural_element->display();
+ } else {
+  os << " ";
  }
- return (os);
+
+ return os;
 }
