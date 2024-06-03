@@ -10,8 +10,20 @@
 
 
 class SaltMinerals: public NaturalElement {
+
+public:
+    SaltMinerals();
+
+    std::string display() const override {
+        return ",";
+    }
+
 private: 
     static int lifespan;
+    int age;
 };
+
+int SaltMinerals::lifespan = 1;
+
 
 #endif //_SALTMINERALS_H

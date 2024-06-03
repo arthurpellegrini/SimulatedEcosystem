@@ -7,12 +7,15 @@
 #define _UNIVERSE_H
 #include <vector>
 
+#include "Cell.h"
+
+
 class Universe {
 public:
     Universe(std::vector<int> dimensions);
     
     void nextGeneration();
-    std::vector<std::vector<int>>& getField();
+    std::vector<std::vector<Cell>>& getField();
     
 /**
  * @param cell
@@ -24,7 +27,7 @@ private:
     int generations;
     bool isDied;
 
-    std::vector<std::vector<int>> field;
+    std::vector<std::vector<Cell>> field;
 };
 
 #endif //_UNIVERSE_H

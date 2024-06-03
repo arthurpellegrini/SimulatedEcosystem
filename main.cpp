@@ -1,11 +1,11 @@
 #include <iostream>
 
+#include "Grass.h"
 #include "Simulation.h"
 
 int main() {
     try {
         Simulation simulation;
-
         simulation.displayField();
 
     }

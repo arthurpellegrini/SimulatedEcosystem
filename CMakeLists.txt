@@ -6,4 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(SimulatedEcosystem main.cpp
         Universe.cpp
         Simulation.cpp
-        SimulationView.cpp)
+        SimulationView.cpp
+        Cell.cpp
+        NaturalElement.cpp
+        Animal.cpp
+        Grass.cpp
+        SaltMinerals.cpp
+        Wolf.cpp
+        Sheep.cpp)

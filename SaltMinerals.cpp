@@ -8,3 +8,9 @@
 /**
  * SaltMinerals implementation
  */
+
+SaltMinerals::SaltMinerals() {
+
+ age = 0;
+
+}
