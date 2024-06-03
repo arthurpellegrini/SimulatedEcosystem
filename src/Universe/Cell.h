@@ -1,35 +1,36 @@
 #ifndef CELL_H
 #define CELL_H
-#include <vector>
 
+#include <vector>
+#include <memory>
+#include <iostream>
 #include "../Animal/Animal.h"
 #include "../NaturalElement/NaturalElement.h"
 
 using namespace std;
 
-
 class Cell {
     bool _isEmpty;
     vector<int> _position;
-    Animal* _animalOnCell;
-    NaturalElement* _naturalElementOnCell;
+    unique_ptr<Animal> _animalOnCell;
+    unique_ptr<NaturalElement> _naturalElementOnCell;
 
-public:
-    Cell(const vector<int> &position={1,1});
-
-    void addAnimal(Animal* animal);
-    void addNaturalElement(NaturalElement* naturalElement);
     void updateIsEmpty();
 
-    bool isEmpty();
-    void setIsEmpty(bool value);
+public:
+    Cell(const vector<int>& position = {0, 0});
 
-    ~Cell(){
-        delete _animalOnCell;
-        delete _naturalElementOnCell;
-    }
+    void addAnimal(unique_ptr<Animal> animal);
+    void removeAnimal();
+    void addNaturalElement(unique_ptr<NaturalElement> naturalElement);
+    void removeNaturalElement();
+
+    bool isEmpty() const;
+    vector<int> getPosition() const;
+    Animal* getAnimal() const;
+    NaturalElement* getNaturalElement() const;
 
     friend ostream& operator<<(ostream& os, const Cell& s);
 };
 
-#endif //CELL_H
+#endif // CELL_H
