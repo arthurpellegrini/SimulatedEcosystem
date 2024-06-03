@@ -3,13 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include "Gender.h"
 
 using namespace std;
 
-enum class Gender {
-    Male,
-    Female
-};
 
 class Animal {
 protected:
@@ -21,7 +18,8 @@ protected:
 public:
     Animal(Gender gender);
 
-    virtual string display() const;
+    virtual string display() const = 0;
+
     virtual void eat() = 0;
     virtual void move() = 0;
     virtual void breed() = 0;
@@ -37,7 +35,6 @@ public:
     virtual ~Animal();
 };
 
-// Surcharge de l'opérateur << pour l'affichage des animaux
 ostream& operator<<(ostream &os, const Animal &animal);
 
 #endif // ANIMAL_H

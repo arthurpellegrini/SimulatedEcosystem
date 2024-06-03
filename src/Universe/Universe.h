@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 class Universe {
 public:
     Universe(const vector<int>& size);

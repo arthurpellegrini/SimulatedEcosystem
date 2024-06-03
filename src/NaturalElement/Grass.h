@@ -3,9 +3,10 @@
 
 #include "NaturalElement.h"
 
+
 class Grass : public NaturalElement {
 public:
- string display() const override;
+    string display() const override;
 };
 
 #endif // GRASS_H

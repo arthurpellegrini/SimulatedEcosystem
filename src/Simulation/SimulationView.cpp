@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <limits>
 
-using namespace std;
 
 void SimulationView::displayCells(Universe& universe) const {
     cout << "Generation " << universe.getGenerations() << endl;

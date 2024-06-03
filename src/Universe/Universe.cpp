@@ -4,6 +4,7 @@
 #include "../NaturalElement/Grass.h"
 #include "../NaturalElement/SaltMinerals.h"
 
+
 Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
     _cells.resize(size[0], vector<Cell>(size[1]));
     _nextCells.resize(size[0], vector<Cell>(size[1]));
@@ -64,8 +65,7 @@ void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
         cell.removeNaturalElement();
     }
 
-    // Breeding logic
-    // ...
+    // Add movement and breeding logic here
 }
 
 void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
@@ -79,11 +79,7 @@ void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
         return;
     }
 
-    // Eating logic
-    // ...
-
-    // Breeding logic
-    // ...
+    // Add movement and breeding logic here
 }
 
 void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
@@ -91,7 +87,13 @@ void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
 }
 
 void Universe::processMinerals(int x, int y, Cell& cell, Cell& nextCell) {
-    nextCell.addNaturalElement(make_unique<Grass>());
+    SaltMinerals* minerals = dynamic_cast<SaltMinerals*>(cell.getNaturalElement());
+    minerals->incrementAge();
+    if (minerals->shouldTransform()) {
+        nextCell.addNaturalElement(make_unique<Grass>());
+    } else {
+        nextCell.addNaturalElement(make_unique<SaltMinerals>(*minerals));
+    }
 }
 
 int Universe::getGenerations() {

@@ -2,7 +2,8 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include <conio.h> // Pour _kbhit et _getch
+#include <conio.h>
+
 
 Simulation::Simulation() : universe(nullptr), isPaused(false), isStopped(false) {
     simulationView = new SimulationView();
@@ -14,7 +15,7 @@ Simulation::Simulation() : universe(nullptr), isPaused(false), isStopped(false) 
 void Simulation::start() {
     isStopped = false;
     isPaused = false;
-    std::thread simThread(&Simulation::simulationLoop, this);
+    thread simThread(&Simulation::simulationLoop, this);
     simThread.join();
 }
 
@@ -32,11 +33,11 @@ void Simulation::stop() {
 }
 
 void Simulation::save() {
-    std::cout << "WIP: Clément's method" << std::endl;
+    cout << "WIP: Clément's method" << endl;
 }
 
 void Simulation::load() {
-    std::cout << "WIP: Clément's method" << std::endl;
+    cout << "WIP: Clément's method" << endl;
 }
 
 void Simulation::simulationLoop() {
@@ -46,16 +47,16 @@ void Simulation::simulationLoop() {
             simulationView->displayCells(*universe);
         }
 
-        if (_kbhit()) { // Check if a key has been pressed
-            char key = _getch(); // Read the pressed key
-            if (key == 'p') { // Pause key
+        if (_kbhit()) { 
+            char key = _getch(); 
+            if (key == 'p') {
                 pause();
-            } else if (key == 's') { // Stop key
+            } else if (key == 's') {
                 stop();
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // Wait for 1 second
+        this_thread::sleep_for(chrono::seconds(1));
     }
 
     simulationView->displayEndSimulation(*universe);

@@ -5,10 +5,11 @@
 
 using namespace std;
 
+
 class NaturalElement {
 public:
- virtual ~NaturalElement() = default;
- virtual string display() const = 0;
+    virtual ~NaturalElement() = default;
+    virtual string display() const = 0;
 };
 
 #endif // NATURALELEMENT_H

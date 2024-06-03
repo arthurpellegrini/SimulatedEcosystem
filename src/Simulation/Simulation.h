@@ -3,27 +3,29 @@
 
 #include "SimulationView.h"
 #include "../Universe/Universe.h"
-#include <thread>
 #include <atomic>
+
+using namespace std;
+
 
 class Simulation {
 public:
- Simulation();
- void start();
- void pause();
- void resume();
- void stop();
- void save();
- void load();
+    Simulation();
+    void start();
+    void pause();
+    void resume();
+    void stop();
+    void save();
+    void load();
 
 private:
- Universe* universe;
- SimulationView* simulationView;
- std::atomic<bool> isPaused;
- std::atomic<bool> isStopped;
+    Universe* universe;
+    SimulationView* simulationView;
+    atomic<bool> isPaused;
+    atomic<bool> isStopped;
 
- void simulationLoop();
- void handlePauseMenu();
+    void simulationLoop();
+    void handlePauseMenu();
 };
 
 #endif // SIMULATION_H

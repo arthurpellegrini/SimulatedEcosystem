@@ -9,6 +9,7 @@
 
 using namespace std;
 
+
 class Cell {
     bool _isEmpty;
     vector<int> _position;
