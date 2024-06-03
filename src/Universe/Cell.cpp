@@ -54,7 +54,10 @@ NaturalElement* Cell::getNaturalElement() const {
 ostream& operator<<(ostream& os, const Cell& cell) {
     if (cell._animal) {
         os << cell._animal->display();
-    } else if (cell._natural_element) {
+    } else {
+        os << " ";
+    }
+    if (cell._natural_element) {
         os << cell._natural_element->display();
     } else {
         os << " ";
