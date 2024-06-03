@@ -13,6 +13,7 @@ public:
     void nextGeneration();
     vector<vector<Cell>>& getCells();
     bool isDead();
+    int getGenerations();
 
 private:
     vector<int> _size;

@@ -5,8 +5,7 @@
 int main() {
     try {
         Simulation simulation;
-        simulation.displayCells();
-
+        simulation.start();
     }
     catch (const std::exception& e) {
         std::cerr << "Erreur : " << e.what() << '\n';

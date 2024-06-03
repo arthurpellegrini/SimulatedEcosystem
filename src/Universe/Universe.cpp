@@ -93,3 +93,7 @@ void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
 void Universe::processMinerals(int x, int y, Cell& cell, Cell& nextCell) {
     nextCell.addNaturalElement(make_unique<Grass>());
 }
+
+int Universe::getGenerations() {
+    return _generations;
+}
