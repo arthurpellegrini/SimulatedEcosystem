@@ -63,5 +63,5 @@ void Simulation::load() {
  * @return void
  */
 void Simulation::displayField() {
-    simulationView->displayField(universe->getField());
+    simulationView->displayField(universe->getCells());
 }

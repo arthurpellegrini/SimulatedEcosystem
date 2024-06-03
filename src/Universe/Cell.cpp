@@ -1,65 +1,45 @@
-/**
- * Project Untitled
- */
-
-
 #include "Cell.h"
 
 #include "../NaturalElement/Grass.h"
 
-/**
- * Case implementation
- */
-Cell::Cell(const std::vector<int> &position) : position(position){
-
- naturalElementOnCase = new Grass();
- animalOnCase = nullptr;
- getSetEmpty(true);
-
+Cell::Cell(const vector<int> &position) : _position(position) {
+ this->_isEmpty = false;
+ this->_naturalElementOnCell = new Grass();
+ this->_animalOnCell = nullptr;
 }
 
-/**
- *@param bool toSet, if true we are ajusting the variable else we are juste getting it
- * @return bool
- */
-bool Cell::getSetEmpty(bool toSet) {
-
-  if(toSet) {
-   isEmpty = (animalOnCase == nullptr && naturalElementOnCase == nullptr);
-
-  }
-
- return isEmpty;
+void Cell::addAnimal(Animal *animal) {
+ this->_animalOnCell = animal;
+ this->updateIsEmpty();
 }
 
-/**
- *@param Animal, we are assigning an Animal to this Case
- * @return void
- */
-bool Cell::addAnimal(Animal* animal) {
- animalOnCase = animal;
-
- return getSetEmpty(true);
+void Cell::addNaturalElement(NaturalElement *NaturalElement) {
+ this->_naturalElementOnCell = NaturalElement;
+ this->updateIsEmpty();
 }
 
-
-/**
- *@param NaturalElement, we are assigning an NaturalElement to this Case
- * @return void
- */
-bool Cell::addNaturalElement(NaturalElement* NaturalElement) {
- naturalElementOnCase = NaturalElement;
-
- return getSetEmpty(true);
-}
-
-std::ostream& operator << (std::ostream &os, const Cell &s) {
-
- if(s.animalOnCase != nullptr) {
-  os <<s.animalOnCase->display();
+void Cell::updateIsEmpty() {
+ if (this->_animalOnCell == nullptr && this->_naturalElementOnCell == nullptr) {
+  this->_isEmpty = true;
+ } else {
+  this->_isEmpty = false;
  }
- if(s.naturalElementOnCase != nullptr) {
-  os <<s.naturalElementOnCase->display();
+}
+
+bool Cell::isEmpty() {
+ return this->_isEmpty;
+}
+
+void Cell::setIsEmpty(const bool value) {
+     this->_isEmpty = value;
+}
+
+ostream &operator <<(ostream &os, const Cell &s) {
+ if (s._animalOnCell != nullptr) {
+  os << s._animalOnCell->display();
+ }
+ if (s._naturalElementOnCell != nullptr) {
+  os << s._naturalElementOnCell->display();
  }
  return (os);
 }

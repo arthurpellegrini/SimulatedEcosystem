@@ -1,33 +1,27 @@
-/**
- * Project Untitled
- */
+#ifndef UNIVERSE_H
+#define UNIVERSE_H
 
-
-#ifndef _UNIVERSE_H
-#define _UNIVERSE_H
 #include <vector>
-
 #include "Cell.h"
 
+using namespace std;
 
 class Universe {
 public:
-    Universe(std::vector<int> dimensions);
-    
-    void nextGeneration();
-    std::vector<std::vector<Cell>>& getField();
-    
-/**
- * @param cell
+    Universe(int width, int height);
+    Universe(const vector<int> &size);
 
-Cell [] neighborhood(Cell cell);
-*/
-private: 
-    std::vector<int> dimensions;
+    void nextGeneration();
+    vector<vector<Cell>>& getCells();
+
+private:
+    int width;
+    int height;
     int generations;
     bool isDied;
 
-    std::vector<std::vector<Cell>> field;
+    vector<vector<Cell>> cells;
+    vector<vector<Cell>> nextCells;
 };
 
-#endif //_UNIVERSE_H
+#endif //UNIVERSE_H

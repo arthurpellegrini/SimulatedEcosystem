@@ -8,40 +8,22 @@
 /**
  * Universe implementation
  */
-Universe::Universe(std::vector<int> dimensions) : dimensions(dimensions) {
- // Initialisation du tableau
- //
+Universe::Universe(const vector<int> &size) {
+ this->width = size[0];
+ this->height = size[1];
 
- field.resize(dimensions[0]);
- for (int i = 0; i < dimensions[0]; i++) {
-  field[i].resize(dimensions[1]);
+ cells.resize(size[0]);
+ for (int i = 0; i < size[0]; i++) {
+  cells[i].resize(size[1]);
  }
 
- // Remplir le tableau avec des valeurs (par exemple, des valeurs incrémentales)
- for (int i = 0; i < dimensions[0]; i++) {
-  for (int j = 0; j < dimensions[1]; j++) {
-   //field[i][j] = Case({i,j});
-  }
- }
+// Todo : Génération aléatoire des cellules
 }
 
-
-/**
- * @return void
- */
 void Universe::nextGeneration() {
     return;
 }
 
-/**
- * @param cell
- * @return Cell []
-
-Cell [] Universe::neighborhood(Cell cell) {
-    return null;
-}*/
-
-
-std::vector<std::vector<Cell>>& Universe::getField() {
- return field;
+vector<vector<Cell>>& Universe::getCells() {
+ return this->cells;
 }

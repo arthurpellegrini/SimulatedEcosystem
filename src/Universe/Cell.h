@@ -1,36 +1,35 @@
-/**
- * Project Untitled
- */
-
-
-#ifndef _CASE_H
-#define _CASE_H
+#ifndef CELL_H
+#define CELL_H
 #include <vector>
 
 #include "../Animal/Animal.h"
 #include "../NaturalElement/NaturalElement.h"
 
+using namespace std;
+
+
 class Cell {
+    bool _isEmpty;
+    vector<int> _position;
+    Animal* _animalOnCell;
+    NaturalElement* _naturalElementOnCell;
 
 public:
-    Cell(const std::vector<int> &position={1,1});
-    bool getSetEmpty(bool toSet=false);
-    bool addAnimal(Animal* animal);
-    bool addNaturalElement(NaturalElement* naturalElement);
+    Cell(const vector<int> &position={1,1});
+
+    void addAnimal(Animal* animal);
+    void addNaturalElement(NaturalElement* naturalElement);
+    void updateIsEmpty();
+
+    bool isEmpty();
+    void setIsEmpty(bool value);
 
     ~Cell(){
-        delete animalOnCase;
-        delete naturalElementOnCase;
+        delete _animalOnCell;
+        delete _naturalElementOnCell;
     }
 
-
-    friend std::ostream& operator<<(std::ostream& os, const Cell& s);
-
-private: 
-    std::vector<int> position;
-    bool isEmpty;
-    Animal* animalOnCase;
-    NaturalElement* naturalElementOnCase;
+    friend ostream& operator<<(ostream& os, const Cell& s);
 };
 
-#endif //_Case_H
+#endif //CELL_H
