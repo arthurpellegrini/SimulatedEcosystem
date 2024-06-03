@@ -2,13 +2,12 @@
 #define WOLF_H
 
 #include "Animal.h"
-#include <string>
 
 class Wolf : public Animal {
 public:
     Wolf(Gender gender);
 
-    std::string display() const override;
+    string display() const override;
     void eat() override;
     void move() override;
     void breed() override;

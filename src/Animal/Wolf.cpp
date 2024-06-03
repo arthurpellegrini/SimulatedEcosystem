@@ -8,7 +8,7 @@ Wolf::Wolf(Gender gender) : Animal(gender) {
     _satiety = satiety;
 }
 
-std::string Wolf::display() const {
+string Wolf::display() const {
     return "W";
 }
 

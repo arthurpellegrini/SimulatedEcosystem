@@ -3,8 +3,6 @@
 
 #include "Animal.h"
 
-using namespace std;
-
 
 class Sheep : public Animal {
 public:

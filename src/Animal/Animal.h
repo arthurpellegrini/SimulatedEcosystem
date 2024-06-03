@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 enum class Gender {
     Male,
     Female
@@ -19,7 +21,7 @@ protected:
 public:
     Animal(Gender gender);
 
-    virtual std::string display() const;
+    virtual string display() const;
     virtual void eat() = 0;
     virtual void move() = 0;
     virtual void breed() = 0;
@@ -36,6 +38,6 @@ public:
 };
 
 // Surcharge de l'opérateur << pour l'affichage des animaux
-std::ostream& operator<<(std::ostream &os, const Animal &animal);
+ostream& operator<<(ostream &os, const Animal &animal);
 
 #endif // ANIMAL_H

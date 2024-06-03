@@ -32,10 +32,10 @@ void Animal::decreaseSatiety() {
 
 Animal::~Animal() {}
 
-std::string Animal::display() const {
+string Animal::display() const {
  return "A";
 }
 
-std::ostream& operator<<(std::ostream &os, const Animal &animal) {
+ostream& operator<<(ostream &os, const Animal &animal) {
  return os << animal.display();
 }

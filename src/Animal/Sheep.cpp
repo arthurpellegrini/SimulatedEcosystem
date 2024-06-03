@@ -8,7 +8,7 @@ Sheep::Sheep(Gender gender) : Animal(gender) {
     _satiety = satiety;
 }
 
-std::string Sheep::display() const {
+string Sheep::display() const {
     return "S";
 }
 
