@@ -5,21 +5,33 @@
 
 #ifndef _SIMULATION_H
 #define _SIMULATION_H
+#include "SimulationView.h"
+#include "Universe.h"
 
 class Simulation {
-public: 
+public:
+
+ // Constructeur
+ Simulation();
     
-void start();
+ void start();
     
-void pause();
+ void pause();
     
-void resume();
+ void resume();
     
-void stop();
+ void stop();
     
-void save();
+ void save();
     
-void load();
+ void load();
+
+ void displayField();
+
+private:
+ Universe* universe;
+ SimulationView* simulationView;
+
 };
 
 #endif //_SIMULATION_H

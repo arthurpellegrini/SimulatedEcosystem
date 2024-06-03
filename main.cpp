@@ -1,6 +1,17 @@
 #include <iostream>
 
+#include "Simulation.h"
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    try {
+        Simulation simulation;
+
+        simulation.displayField();
+
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Erreur : " << e.what() << '\n';
+    }
+
     return 0;
 }
