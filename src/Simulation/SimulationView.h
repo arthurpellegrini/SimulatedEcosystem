@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "Cell.h"
+#include "../Universe/Cell.h"
 
 class SimulationView {
 public:

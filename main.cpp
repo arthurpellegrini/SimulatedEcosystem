@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "Grass.h"
-#include "Simulation.h"
+#include "src/Simulation/Simulation.h"
 
 int main() {
     try {

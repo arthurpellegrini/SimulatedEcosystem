@@ -5,7 +5,7 @@
 
 #include "Cell.h"
 
-#include "Grass.h"
+#include "../NaturalElement/Grass.h"
 
 /**
  * Case implementation

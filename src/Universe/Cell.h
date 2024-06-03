@@ -7,8 +7,8 @@
 #define _CASE_H
 #include <vector>
 
-#include "Animal.h"
-#include "NaturalElement.h"
+#include "../Animal/Animal.h"
+#include "../NaturalElement/NaturalElement.h"
 
 class Cell {
 
