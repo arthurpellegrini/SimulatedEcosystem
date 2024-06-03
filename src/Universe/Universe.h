@@ -2,6 +2,7 @@
 #define UNIVERSE_H
 
 #include <vector>
+#include <memory>
 #include "Cell.h"
 
 using namespace std;
@@ -9,19 +10,24 @@ using namespace std;
 class Universe {
 public:
     Universe(int width, int height);
-    Universe(const vector<int> &size);
+    Universe(const vector<int>& size);
 
     void nextGeneration();
     vector<vector<Cell>>& getCells();
 
 private:
-    int width;
-    int height;
+    vector<int> _size;
     int generations;
     bool isDied;
 
     vector<vector<Cell>> cells;
     vector<vector<Cell>> nextCells;
+
+    void processCell(int x, int y);
+    void processSheep(int x, int y, Cell& cell, Cell& nextCell);
+    void processWolf(int x, int y, Cell& cell, Cell& nextCell);
+    void processGrass(int x, int y, Cell& cell, Cell& nextCell);
+    void processMinerals(int x, int y, Cell& cell, Cell& nextCell);
 };
 
-#endif //UNIVERSE_H
+#endif // UNIVERSE_H
