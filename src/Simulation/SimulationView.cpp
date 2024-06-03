@@ -45,3 +45,40 @@ std::vector<int> SimulationView::requestDimensions() {
  }
  return {x, y};
 }
+
+
+
+char SimulationView::displayPauseMenu() {
+ char choice;
+
+ std::cout << "Vous avez mis la generation en pause :" << std::endl;
+ std::cout << "Selectionnez une des options suivantes : r=>resume, e=>exit, s=>save, l=>load" << std::endl;
+
+ while (true) {
+  choice = std::cin.get();
+
+  // Ignorer les caractères de nouvelle ligne ou de retour chariot
+  if (choice == '\n' || choice == '\r') {
+   continue;
+  }
+
+  // Vérifier si l'entrée est l'une des options valides
+  if (choice == 'r' || choice == 'e' || choice == 's' || choice == 'l') {
+   break; // Sortir de la boucle si l'entrée est valide
+  }
+
+  // Entrée invalide, afficher un message d'erreur
+  std::cin.clear(); // Effacer l'état d'erreur de std::cin
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignorer l'entrée invalide
+  std::cout << "Entree invalide. Veuillez entrer un caractere unique parmi les options r, e, s, l :" << std::endl;
+ }
+
+ return choice;
+
+}
+
+
+void SimulationView::displayEndSimulation(Universe& universe) {
+
+ std::cout << "La simulation est finis, merci pour tous il faut faire une méthode display de l'univers pour recap le nombre de gen etc." /*<< univers->display()*/<< std::endl;
+}

@@ -5,6 +5,10 @@
 
 #include "Simulation.h"
 
+#include <thread>
+#include <chrono>
+#include <conio.h> // Pour _kbhit et _getch
+
 /**
  * Simulation implementation
  */
@@ -21,42 +25,67 @@ Simulation::Simulation() : universe(nullptr) {
  * @return void
  */
 void Simulation::start() {
-    return;
+    while (!universe->getisDead()) {
+        if (_kbhit()) { // Vérifie si une touche a été pressée
+            _getch();// Lit la touche pressée pour vider le buffer
+            pause(); // Appelle la fonction pause
+        }
+
+        if (!universe->getisDead()) {
+
+            std::cout<< "j'ai mis en commentaire les vrais fonctions a decommenter. Qaund ca sera finis"<< std::endl;
+            //universe->nextGeneration();
+            //simulationView->displayField(universe->getField());
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Attend 0,2 secondes
+    }
 }
 
 /**
  * @return void
  */
 void Simulation::pause() {
-    return;
+    switch (simulationView->displayPauseMenu()) {
+        case 'r' : break;
+        case 'e' :
+            stop();
+            break;
+        case 's' :
+            save();
+            break;
+        case 'l' :
+            load();
+            break;
+        default: pause();
+    }
 }
 
 /**
  * @return void
  */
-void Simulation::resume() {
-    return;
+void Simulation::resume() { // sert a rien au final
 }
 
 /**
  * @return void
  */
 void Simulation::stop() {
-    return;
+    universe->setisDead(true);
+    simulationView->displayEndSimulation(*universe);
 }
 
 /**
  * @return void
  */
 void Simulation::save() {
-    return;
+    std::cout<< "SAVE on ajoute le methode de clement"<< std::endl;
 }
 
 /**
  * @return void
  */
 void Simulation::load() {
-    return;
+    std::cout<< "LAOD on ajoute le methode de clement"<< std::endl;
 }
 
 /**
