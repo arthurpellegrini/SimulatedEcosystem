@@ -4,8 +4,8 @@
 #include "NaturalElement.h"
 
 class SaltMinerals : public NaturalElement {
-    static const int lifespan = 1;
-    int age;
+    static const int _lifespan = 1;
+    int _age;
 
 public:
     SaltMinerals();

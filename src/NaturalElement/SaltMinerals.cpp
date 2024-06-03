@@ -1,15 +1,15 @@
 #include "SaltMinerals.h"
 
-SaltMinerals::SaltMinerals() : age(0) {}
+SaltMinerals::SaltMinerals() : _age(0) {}
 
 string SaltMinerals::display() const {
  return "*";
 }
 
 void SaltMinerals::incrementAge() {
- age++;
+ _age++;
 }
 
 bool SaltMinerals::shouldTransform() const {
- return age >= lifespan;
+ return _age >= _lifespan;
 }

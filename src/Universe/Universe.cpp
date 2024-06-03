@@ -4,16 +4,16 @@
 #include "../NaturalElement/Grass.h"
 #include "../NaturalElement/SaltMinerals.h"
 
-Universe::Universe(int width, int height) : _size{width, height}, generations(0), isDied(false) {
-    cells.resize(width, vector<Cell>(height));
-    nextCells.resize(width, vector<Cell>(height));
+Universe::Universe(int width, int height) : _size{width, height}, _generations(0), _isDead(false) {
+    _cells.resize(width, vector<Cell>(height));
+    _nextCells.resize(width, vector<Cell>(height));
 
     // Todo: Random generation of initial cells
 }
 
-Universe::Universe(const vector<int>& size) : _size(size), generations(0), isDied(false) {
-    cells.resize(size[0], vector<Cell>(size[1]));
-    nextCells.resize(size[0], vector<Cell>(size[1]));
+Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
+    _cells.resize(size[0], vector<Cell>(size[1]));
+    _nextCells.resize(size[0], vector<Cell>(size[1]));
 
     // Todo: Random generation of initial cells
 }
@@ -24,18 +24,26 @@ void Universe::nextGeneration() {
             processCell(i, j);
         }
     }
-    cells = move(nextCells);
-    nextCells.resize(_size[0], vector<Cell>(_size[1]));
-    generations++;
+    _cells = move(_nextCells);
+    _nextCells.resize(_size[0], vector<Cell>(_size[1]));
+    _generations++;
 }
 
 vector<vector<Cell>>& Universe::getCells() {
-    return cells;
+    return _cells;
+}
+
+bool Universe::isDead() {
+    return _isDead;
+}
+
+void Universe::setDead(bool isDead) {
+    _isDead = isDead;
 }
 
 void Universe::processCell(int x, int y) {
-    Cell& cell = cells[x][y];
-    Cell& nextCell = nextCells[x][y];
+    Cell& cell = _cells[x][y];
+    Cell& nextCell = _nextCells[x][y];
 
     if (cell.getAnimal() != nullptr) {
         if (dynamic_cast<Sheep*>(cell.getAnimal())) {

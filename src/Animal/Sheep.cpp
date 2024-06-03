@@ -1,11 +1,11 @@
 #include "Sheep.h"
 
-const int Sheep::satiety = 5;
-const int Sheep::lifespan = 50;
-const int Sheep::fov = 1;
+const int Sheep::_satiety = 5;
+const int Sheep::_lifespan = 50;
+const int Sheep::_fov = 1;
 
 Sheep::Sheep(Gender gender) : Animal(gender) {
-    _satiety = satiety;
+    _satiety = _satiety;
 }
 
 string Sheep::display() const {
@@ -13,7 +13,7 @@ string Sheep::display() const {
 }
 
 void Sheep::eat() {
-    _satiety = satiety;
+    _satiety = _satiety;
 }
 
 void Sheep::move() {}
@@ -23,9 +23,9 @@ void Sheep::breed() {}
 void Sheep::die() {}
 
 int Sheep::getSatiety() {
-    return satiety;
+    return _satiety;
 }
 
 int Sheep::getLifespan() {
-    return lifespan;
+    return _lifespan;
 }

@@ -18,9 +18,9 @@ public:
     static int getLifespan();
 
 private:
-    static const int satiety;
-    static const int lifespan;
-    static const int fov;
+    static const int _satiety;
+    static const int _lifespan;
+    static const int _fov;
 };
 
 #endif // SHEEP_H

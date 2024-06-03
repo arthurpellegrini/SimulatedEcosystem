@@ -2,7 +2,6 @@
 #define UNIVERSE_H
 
 #include <vector>
-#include <memory>
 #include "Cell.h"
 
 using namespace std;
@@ -14,14 +13,15 @@ public:
 
     void nextGeneration();
     vector<vector<Cell>>& getCells();
+    bool isDead();
 
 private:
     vector<int> _size;
-    int generations;
-    bool isDied;
+    int _generations;
+    bool _isDead;
 
-    vector<vector<Cell>> cells;
-    vector<vector<Cell>> nextCells;
+    vector<vector<Cell>> _cells;
+    vector<vector<Cell>> _nextCells;
 
     void processCell(int x, int y);
     void processSheep(int x, int y, Cell& cell, Cell& nextCell);
