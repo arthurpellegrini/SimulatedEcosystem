@@ -12,8 +12,8 @@ using namespace std;
 class Cell {
     bool _isEmpty;
     vector<int> _position;
-    shared_ptr<Animal> _animalOnCell;
-    shared_ptr<NaturalElement> _naturalElementOnCell;
+    shared_ptr<Animal> _animal;
+    shared_ptr<NaturalElement> _natural_element;
 
     void updateIsEmpty();
 
@@ -30,7 +30,7 @@ public:
     Animal* getAnimal() const;
     NaturalElement* getNaturalElement() const;
 
-    friend ostream& operator<<(ostream& os, const Cell& s);
+    friend ostream& operator<<(ostream& os, const Cell& cell);
 };
 
 #endif // CELL_H

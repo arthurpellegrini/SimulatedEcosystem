@@ -5,7 +5,7 @@
 int main() {
     try {
         Simulation simulation;
-        simulation.displayField();
+        simulation.displayCells();
 
     }
     catch (const std::exception& e) {

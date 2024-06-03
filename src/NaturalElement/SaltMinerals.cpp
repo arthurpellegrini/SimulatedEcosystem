@@ -3,7 +3,7 @@
 SaltMinerals::SaltMinerals() : _age(0) {}
 
 string SaltMinerals::display() const {
- return "*";
+ return "M";
 }
 
 void SaltMinerals::incrementAge() {

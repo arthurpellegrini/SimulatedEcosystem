@@ -1,67 +1,18 @@
-/**
- * Project Untitled
- */
-
-
 #include "Simulation.h"
 
-/**
- * Simulation implementation
- */
-// Constructeur
-
 Simulation::Simulation() : universe(nullptr) {
-
     simulationView = new SimulationView();
-    universe = new Universe(simulationView->requestDimensions());
+    const auto dimensions = simulationView->requestDimensions();
+    universe = new Universe(dimensions);
 }
 
-
-/**
- * @return void
- */
-void Simulation::start() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::pause() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::resume() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::stop() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::save() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::load() {
-    return;
-}
-
-/**
- * @return void
- */
-void Simulation::displayField() {
-    simulationView->displayField(universe->getCells());
+void Simulation::start() {}
+void Simulation::pause() {}
+void Simulation::resume() {}
+void Simulation::stop() {}
+void Simulation::save() {}
+void Simulation::load() {}
+void Simulation::displayCells() {
+    auto cells = universe->getCells();
+    simulationView->displayCells(cells);
 }

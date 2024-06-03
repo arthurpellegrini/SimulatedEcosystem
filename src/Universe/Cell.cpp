@@ -4,34 +4,34 @@
 Cell::Cell(const vector<int>& position) :
     _isEmpty(true),
     _position(position),
-    _animalOnCell(nullptr),
-    _naturalElementOnCell(make_unique<Grass>())
+    _animal(nullptr),
+    _natural_element(make_unique<Grass>())
 {
  updateIsEmpty();
 }
 
 void Cell::addAnimal(unique_ptr<Animal> animal) {
- _animalOnCell = move(animal);
+ _animal = move(animal);
  updateIsEmpty();
 }
 
 void Cell::removeAnimal() {
- _animalOnCell.reset();
+ _animal.reset();
  updateIsEmpty();
 }
 
 void Cell::addNaturalElement(unique_ptr<NaturalElement> naturalElement) {
- _naturalElementOnCell = move(naturalElement);
+ _natural_element = move(naturalElement);
  updateIsEmpty();
 }
 
 void Cell::removeNaturalElement() {
- _naturalElementOnCell.reset();
+ _natural_element.reset();
  updateIsEmpty();
 }
 
 void Cell::updateIsEmpty() {
- _isEmpty = (!_animalOnCell && !_naturalElementOnCell);
+ _isEmpty = (!_animal && !_natural_element);
 }
 
 bool Cell::isEmpty() const {
@@ -43,19 +43,25 @@ vector<int> Cell::getPosition() const {
 }
 
 Animal* Cell::getAnimal() const {
- return _animalOnCell.get();
+ return _animal.get();
 }
 
 NaturalElement* Cell::getNaturalElement() const {
- return _naturalElementOnCell.get();
+ return _natural_element.get();
 }
 
-ostream& operator<<(ostream& os, const Cell& s) {
- if (s._animalOnCell) {
-  os << s._animalOnCell->display();
+ostream& operator<<(ostream& os, const Cell& cell) {
+ if (cell._animal) {
+  os << cell._animal->display();
+ } else {
+  os << " ";
  }
- if (s._naturalElementOnCell) {
-  os << s._naturalElementOnCell->display();
+
+ if (cell._natural_element) {
+  os << cell._natural_element->display();
+ } else {
+  os << " ";
  }
+
  return os;
 }
