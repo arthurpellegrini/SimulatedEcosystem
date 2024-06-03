@@ -5,15 +5,15 @@
 #include "../NaturalElement/SaltMinerals.h"
 
 Universe::Universe(int width, int height) : _size{width, height}, generations(0), isDied(false) {
-    cells.resize(width, std::vector<Cell>(height));
-    nextCells.resize(width, std::vector<Cell>(height));
+    cells.resize(width, vector<Cell>(height));
+    nextCells.resize(width, vector<Cell>(height));
 
     // Todo: Random generation of initial cells
 }
 
-Universe::Universe(const std::vector<int>& size) : _size(size), generations(0), isDied(false) {
-    cells.resize(size[0], std::vector<Cell>(size[1]));
-    nextCells.resize(size[0], std::vector<Cell>(size[1]));
+Universe::Universe(const vector<int>& size) : _size(size), generations(0), isDied(false) {
+    cells.resize(size[0], vector<Cell>(size[1]));
+    nextCells.resize(size[0], vector<Cell>(size[1]));
 
     // Todo: Random generation of initial cells
 }
@@ -24,12 +24,12 @@ void Universe::nextGeneration() {
             processCell(i, j);
         }
     }
-    cells = std::move(nextCells);
-    nextCells.resize(_size[0], std::vector<Cell>(_size[1]));
+    cells = move(nextCells);
+    nextCells.resize(_size[0], vector<Cell>(_size[1]));
     generations++;
 }
 
-std::vector<std::vector<Cell>>& Universe::getCells() {
+vector<vector<Cell>>& Universe::getCells() {
     return cells;
 }
 
@@ -56,7 +56,7 @@ void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
     sheep->decreaseSatiety();
 
     if (sheep->getAge() > Sheep::getLifespan() || sheep->getSatiety() <= 0) {
-        nextCell.addNaturalElement(std::make_unique<SaltMinerals>());
+        nextCell.addNaturalElement(make_unique<SaltMinerals>());
         cell.removeAnimal();
         return;
     }
@@ -77,7 +77,7 @@ void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
     wolf->decreaseSatiety();
 
     if (wolf->getAge() > Wolf::getLifespan() || wolf->getSatiety() <= 0) {
-        nextCell.addNaturalElement(std::make_unique<SaltMinerals>());
+        nextCell.addNaturalElement(make_unique<SaltMinerals>());
         cell.removeAnimal();
         return;
     }
@@ -90,9 +90,9 @@ void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
 }
 
 void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
-    nextCell.addNaturalElement(std::make_unique<Grass>());
+    nextCell.addNaturalElement(make_unique<Grass>());
 }
 
 void Universe::processMinerals(int x, int y, Cell& cell, Cell& nextCell) {
-    nextCell.addNaturalElement(std::make_unique<Grass>());
+    nextCell.addNaturalElement(make_unique<Grass>());
 }

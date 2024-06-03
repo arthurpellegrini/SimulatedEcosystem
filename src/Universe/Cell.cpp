@@ -1,17 +1,17 @@
 #include "Cell.h"
 #include "../NaturalElement/Grass.h"
 
-Cell::Cell(const std::vector<int>& position) :
+Cell::Cell(const vector<int>& position) :
     _isEmpty(true),
     _position(position),
     _animalOnCell(nullptr),
-    _naturalElementOnCell(std::make_unique<Grass>())
+    _naturalElementOnCell(make_unique<Grass>())
 {
  updateIsEmpty();
 }
 
-void Cell::addAnimal(std::unique_ptr<Animal> animal) {
- _animalOnCell = std::move(animal);
+void Cell::addAnimal(unique_ptr<Animal> animal) {
+ _animalOnCell = move(animal);
  updateIsEmpty();
 }
 
@@ -20,8 +20,8 @@ void Cell::removeAnimal() {
  updateIsEmpty();
 }
 
-void Cell::addNaturalElement(std::unique_ptr<NaturalElement> naturalElement) {
- _naturalElementOnCell = std::move(naturalElement);
+void Cell::addNaturalElement(unique_ptr<NaturalElement> naturalElement) {
+ _naturalElementOnCell = move(naturalElement);
  updateIsEmpty();
 }
 
@@ -38,7 +38,7 @@ bool Cell::isEmpty() const {
  return _isEmpty;
 }
 
-std::vector<int> Cell::getPosition() const {
+vector<int> Cell::getPosition() const {
  return _position;
 }
 
@@ -50,7 +50,7 @@ NaturalElement* Cell::getNaturalElement() const {
  return _naturalElementOnCell.get();
 }
 
-std::ostream& operator<<(std::ostream& os, const Cell& s) {
+ostream& operator<<(ostream& os, const Cell& s) {
  if (s._animalOnCell) {
   os << s._animalOnCell->display();
  }
