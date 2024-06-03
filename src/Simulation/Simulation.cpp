@@ -15,7 +15,7 @@ void Simulation::start() {
     isStopped = false;
     isPaused = false;
     std::thread simThread(&Simulation::simulationLoop, this);
-    simThread.detach();
+    simThread.join();
 }
 
 void Simulation::pause() {
@@ -42,10 +42,8 @@ void Simulation::load() {
 void Simulation::simulationLoop() {
     while (!isStopped) {
         if (!isPaused) {
-            cout << "Not paused";
             universe->nextGeneration();
             simulationView->displayCells(*universe);
-            cout << "Not paused";
         }
 
         if (_kbhit()) { // Check if a key has been pressed

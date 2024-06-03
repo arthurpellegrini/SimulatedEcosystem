@@ -1,4 +1,6 @@
 #include "SimulationView.h"
+
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -6,6 +8,8 @@
 using namespace std;
 
 void SimulationView::displayCells(Universe& universe) const {
+    cout << "Generation " << universe.getGenerations() << endl;
+
     const auto& cells = universe.getCells();
     for (const auto& row : cells) {
         printSeparator(row.size());
@@ -18,8 +22,8 @@ void SimulationView::displayCells(Universe& universe) const {
 }
 
 vector<int> SimulationView::requestDimensions() const {
-    int x = getValidIntegerInput("Entrez le nombre de lignes (x) :");
-    int y = getValidIntegerInput("Entrez le nombre de colonnes (y) :");
+    int x = getValidIntegerInput("How many rows ?");
+    int y = getValidIntegerInput("How many columns ?");
     cout << '\n';
     return {x, y};
 }
@@ -33,12 +37,18 @@ void SimulationView::printSeparator(int cols) const {
 }
 
 int SimulationView::getValidIntegerInput(const string& prompt) const {
+    string input;
     int value;
     cout << prompt;
-    while (!(cin >> value) || value <= 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Entrée invalide. Veuillez entrer un nombre entier positif :";
+    while (true) {
+        getline(cin, input);
+        if (all_of(input.begin(), input.end(), ::isdigit)) {
+            value = stoi(input);
+            if (value > 0) {
+                break;
+            }
+        }
+        cout << "Not Integer ! " << prompt;
     }
     return value;
 }
@@ -65,5 +75,5 @@ char SimulationView::displayPauseMenu() const {
 }
 
 void SimulationView::displayEndSimulation(Universe& universe) const {
-    cout << "La simulation est terminée après " << universe.getGenerations() << " générations." << endl;
+    cout << "The universe is dead after " << universe.getGenerations() << " generations." << endl;
 }
