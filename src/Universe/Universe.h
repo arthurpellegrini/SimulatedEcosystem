@@ -8,7 +8,6 @@ using namespace std;
 
 class Universe {
 public:
-    Universe(int width, int height);
     Universe(const vector<int>& size);
 
     void nextGeneration();

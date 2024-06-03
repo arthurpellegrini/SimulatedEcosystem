@@ -4,13 +4,6 @@
 #include "../NaturalElement/Grass.h"
 #include "../NaturalElement/SaltMinerals.h"
 
-Universe::Universe(int width, int height) : _size{width, height}, _generations(0), _isDead(false) {
-    _cells.resize(width, vector<Cell>(height));
-    _nextCells.resize(width, vector<Cell>(height));
-
-    // Todo: Random generation of initial cells
-}
-
 Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
     _cells.resize(size[0], vector<Cell>(size[1]));
     _nextCells.resize(size[0], vector<Cell>(size[1]));
