@@ -86,6 +86,10 @@ vector<vector<Cell>>& Universe::getCells() {
     return _cells;
 }
 
+Cell& Universe::getCell(const std::pair<int, int>& coordinates) {
+    return _cells[coordinates.first][coordinates.second];
+}
+
 bool Universe::isDead() {
     return _isDead;
 }

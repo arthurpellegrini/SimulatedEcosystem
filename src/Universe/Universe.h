@@ -13,6 +13,7 @@ public:
 
     void nextGeneration();
     vector<vector<Cell>>& getCells();
+    Cell& getCell(const std::pair<int, int>& coordinates);
     bool isDead();
     int getGenerations();
 
