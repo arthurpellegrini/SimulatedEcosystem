@@ -7,6 +7,7 @@
 class Wolf : public Animal {
 public:
     Wolf(Gender gender);
+    Wolf(int age, int satiety, Gender gender);
 
     string display() const override;
     void eat() override;

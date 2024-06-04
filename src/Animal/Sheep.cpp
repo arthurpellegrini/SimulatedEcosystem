@@ -10,6 +10,8 @@ Sheep::Sheep(Gender gender) : Animal(gender) {
     _satiety = _maxSatiety;
 }
 
+Sheep::Sheep(int age, int satiety, Gender gender) : Animal(age, satiety, gender) {}
+
 string Sheep::display() const {
     return "S";
 }

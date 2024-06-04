@@ -10,6 +10,9 @@ Wolf::Wolf(Gender gender) : Animal(gender) {
     _satiety = _maxSatiety;
 }
 
+Wolf::Wolf(int age, int satiety, Gender gender) : Animal(age, satiety, gender) {}
+
+
 string Wolf::display() const {
     return "W";
 }

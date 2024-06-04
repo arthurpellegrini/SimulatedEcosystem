@@ -35,31 +35,55 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
         std::string part;
         int posX, posY;
 
+        // Lire les éléments
         std::getline(iss, part, ';');
         posX = std::stoi(part);
 
         std::getline(iss, part, ';');
         posY = std::stoi(part);
 
-        // Lire les éléments
         std::getline(iss, part, ';');
         char element1 = part[0];
         char element2 = part[1];
-
-        std::cout << "Importing elements " << element1 << " and " << element2 << " at position (" << posX << ", " << posY << ")" << std::endl;
-
-        Cell& cell = universe.getCell({posX, posY});
-
         char elements[] = {element1, element2};
 
+        int age = -1;
+        int satiety = -1;
+        Gender gender = Gender::Male;
+
+        if (element1 == 'S' || element1 == 'W') {
+            std::cout << "Reading animal data" << std::endl;
+
+            std::getline(iss, part, ';');
+            age = std::stoi(part);
+
+            std::getline(iss, part, ';');
+            satiety = std::stoi(part);
+
+            std::getline(iss, part, ';');
+            char genderChar = part[0];
+            gender = (genderChar == 'M' ? Gender::Male : Gender::Female);
+        }
+
+        //std::cout << "Importing elements " << element1 << " and " << element2 << " at position (" << posX << ", " << posY << ")" << std::endl;
+
+        Cell &cell = universe.getCell({posX, posY});
+
         for (char element : elements) {
+            std::cout << "Importing element " << element << std::endl;
             switch (element) {
                 case 'W':
-                    cell.addAnimal(std::make_unique<Wolf>(Gender::Male)); // Assumons que tous les loups importés sont des mâles
+                {
+                    std::unique_ptr<Wolf> wolf = std::make_unique<Wolf>(age , satiety, gender);
+                    cell.addAnimal(std::move(wolf));
+                }
                     break;
 
                 case 'S':
-                    cell.addAnimal(std::make_unique<Sheep>(Gender::Male)); // Assumons que tous les moutons importés sont des mâles
+                {
+                    std::unique_ptr<Sheep> sheep = std::make_unique<Sheep>(age, satiety, gender);
+                    cell.addAnimal(std::move(sheep));
+                }
                     break;
 
                 case 'G':
