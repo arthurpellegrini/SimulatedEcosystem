@@ -3,16 +3,18 @@
 
 #include "NaturalElement.h"
 
-class SaltMinerals : public NaturalElement {
-    static const int _lifespan = 1;
-    int _age;
 
+class SaltMinerals : public NaturalElement {
 public:
     SaltMinerals();
 
     string display() const override;
     void incrementAge();
     bool shouldTransform() const;
+
+private:
+    int _age;
+    static const int _lifespan = 1;
 };
 
 #endif // SALTMINERALS_H

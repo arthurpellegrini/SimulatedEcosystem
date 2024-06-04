@@ -3,6 +3,7 @@
 
 #include "Animal.h"
 
+
 class Wolf : public Animal {
 public:
     Wolf(Gender gender);
@@ -13,14 +14,12 @@ public:
     void breed() override;
     void die() override;
 
-    int getSatiety();
     static int getLifespan();
 
 private:
-    int _satiety;
     static const int _maxSatiety;
     static const int _lifespan;
-    static const int _fov;
+    static const int _fov; // Field of view for movement
 };
 
 #endif // WOLF_H
