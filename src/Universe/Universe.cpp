@@ -72,14 +72,31 @@ void Universe::placeRandomNaturalElement(unique_ptr<NaturalElement> natural_elem
 }
 
 void Universe::nextGeneration() {
-    // Déplace les
-
+    // Dans cette fonction, l'idée est de déplacer progressivement les entitées vers la prochaine génération
+    // On déplace vers la case à la même position sur l'autre tableau
+    // Voici l'ordre:
+    // 1. SaltMinerals -> Les faire évoluer en grass
+    // 2. Grass -> Rien de spécial à faire
 
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
-            processCell(i, j);
+            processNaturalElement(i, j);
         }
     }
+
+
+    // 3. Sheep -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
+    // Si le sheep n'est pas à sa max satiété alors manger l'herbe (si existant) sur la case sur laquelle il a été déplacé
+    // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
+    // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
+
+
+
+    // for (int i = 0; i < _size[0]; ++i) {
+    //     for (int j = 0; j < _size[1]; ++j) {
+    //         processCell(i, j);
+    //     }
+    // }
     _cells = move(_nextCells);
     _nextCells.resize(_size[0], vector<Cell>(_size[1]));
     _generations++;
@@ -95,6 +112,28 @@ Cell& Universe::getCell(const std::pair<int, int>& coordinates) {
 
 bool Universe::isDead() {
     return _isDead;
+}
+
+void Universe::processNaturalElement(int x, int y) {
+    Cell& cell = _cells[x][y];
+    Cell& nextCell = _nextCells[x][y];
+
+    auto naturalElement = cell.getNaturalElement();
+    if (naturalElement != nullptr) {
+        if (dynamic_cast<Grass*>(naturalElement)) {
+            nextCell.addNaturalElement(make_unique<Grass>(*dynamic_cast<Grass*>(naturalElement))); // On garde l'herbe
+            cell.removeNaturalElement();
+        } else if (dynamic_cast<SaltMinerals*>(naturalElement)) {
+            dynamic_cast<SaltMinerals*>(naturalElement)->incrementAge();
+            if (dynamic_cast<SaltMinerals*>(naturalElement)->shouldTransform()) {
+                nextCell.addNaturalElement(make_unique<Grass>());
+                cell.removeNaturalElement();
+            } else { // On garde les minéraux
+                nextCell.addNaturalElement(make_unique<SaltMinerals>(*dynamic_cast<SaltMinerals*>(naturalElement)));
+                cell.removeNaturalElement();
+            }
+        }
+    }
 }
 
 void Universe::processCell(int x, int y) {

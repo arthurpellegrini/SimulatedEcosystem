@@ -14,7 +14,7 @@ public:
 
 private:
     int _age;
-    static const int _lifespan = 1;
+    static const int _lifespan;
 };
 
 #endif // SALTMINERALS_H

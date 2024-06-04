@@ -31,6 +31,7 @@ private:
     void placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element);
 
     void processCell(int x, int y);
+    void processNaturalElement(int x, int y);
     void processSheep(int x, int y, Cell& cell, Cell& nextCell);
     void processWolf(int x, int y, Cell& cell, Cell& nextCell);
     void processGrass(int x, int y, Cell& cell, Cell& nextCell);
