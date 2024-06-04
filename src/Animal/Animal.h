@@ -9,12 +9,6 @@ using namespace std;
 
 
 class Animal {
-protected:
-    int _age;
-    Gender _gender;
-    int _satiety;
-    static const int _maxSatiety;
-
 public:
     Animal(Gender gender);
 
@@ -33,6 +27,12 @@ public:
     void decreaseSatiety();
 
     virtual ~Animal();
+
+protected:
+    int _age;
+    Gender _gender;
+    int _satiety;
+    static const int _maxSatiety;
 };
 
 ostream& operator<<(ostream &os, const Animal &animal);

@@ -4,32 +4,33 @@
 #include <chrono>
 #include <conio.h>
 
+const vector<int> Simulation::_dimensions = {10, 10};
 
-Simulation::Simulation() : universe(nullptr), isPaused(false), isStopped(false) {
-    simulationView = new SimulationView();
-    const auto dimensions = simulationView->requestDimensions();
-    universe = new Universe(dimensions);
-    simulationView->displayCells(*universe);
+Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(false) {
+    _simulationView = new SimulationView();
+    // const auto dimensions = simulationView->requestDimensions();
+    _universe = new Universe(_dimensions);
+    _simulationView->displayCells(*_universe);
 }
 
 void Simulation::start() {
-    isStopped = false;
-    isPaused = false;
+    _isStopped = false;
+    _isPaused = false;
     thread simThread(&Simulation::simulationLoop, this);
     simThread.join();
 }
 
 void Simulation::pause() {
-    isPaused = true;
+    _isPaused = true;
     handlePauseMenu();
 }
 
 void Simulation::resume() {
-    isPaused = false;
+    _isPaused = false;
 }
 
 void Simulation::stop() {
-    isStopped = true;
+    _isStopped = true;
 }
 
 void Simulation::save() {
@@ -41,10 +42,10 @@ void Simulation::load() {
 }
 
 void Simulation::simulationLoop() {
-    while (!isStopped) {
-        if (!isPaused) {
-            universe->nextGeneration();
-            simulationView->displayCells(*universe);
+    while (!_isStopped) {
+        if (!_isPaused) {
+            _universe->nextGeneration();
+            _simulationView->displayCells(*_universe);
         }
 
         if (_kbhit()) { 
@@ -59,11 +60,11 @@ void Simulation::simulationLoop() {
         this_thread::sleep_for(chrono::seconds(1));
     }
 
-    simulationView->displayEndSimulation(*universe);
+    _simulationView->displayEndSimulation(*_universe);
 }
 
 void Simulation::handlePauseMenu() {
-    char choice = simulationView->displayPauseMenu();
+    char choice = _simulationView->displayPauseMenu();
     switch (choice) {
         case 'r':
             resume();

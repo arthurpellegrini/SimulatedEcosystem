@@ -6,7 +6,7 @@ Cell::Cell(const vector<int>& position) :
     _isEmpty(true),
     _position(position),
     _animal(nullptr),
-    _natural_element(make_unique<Grass>())
+    _natural_element(nullptr)
 {
     updateIsEmpty();
 }
@@ -37,6 +37,14 @@ void Cell::updateIsEmpty() {
 
 bool Cell::isEmpty() const {
     return _isEmpty;
+}
+
+bool Cell::hasAnimal() const {
+    return !_animal;
+}
+
+bool Cell::hasNaturalElement() const {
+    return !_natural_element;
 }
 
 vector<int> Cell::getPosition() const {

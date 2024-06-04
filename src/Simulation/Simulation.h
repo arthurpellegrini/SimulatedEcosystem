@@ -19,13 +19,15 @@ public:
     void load();
 
 private:
-    Universe* universe;
-    SimulationView* simulationView;
-    atomic<bool> isPaused;
-    atomic<bool> isStopped;
+    Universe* _universe;
+    SimulationView* _simulationView;
+    atomic<bool> _isPaused;
+    atomic<bool> _isStopped;
 
     void simulationLoop();
     void handlePauseMenu();
+
+    static const vector<int> _dimensions;
 };
 
 #endif // SIMULATION_H

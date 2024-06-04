@@ -1,15 +1,74 @@
 #include "Universe.h"
+
+#include <cmath>
+
 #include "../Animal/Wolf.h"
 #include "../Animal/Sheep.h"
 #include "../NaturalElement/Grass.h"
 #include "../NaturalElement/SaltMinerals.h"
+
+const float Universe::_percentageAnimal = 0.10;
+const float Universe::_percentageWolves = 0.20;
+const float Universe::_percentageSaltMinerals = 0.10;
 
 
 Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
     _cells.resize(size[0], vector<Cell>(size[1]));
     _nextCells.resize(size[0], vector<Cell>(size[1]));
 
-    // Todo: Random generation of initial cells
+    srand(static_cast<unsigned>(time(nullptr)));
+
+    const int totalCells = size[0] * size[1];
+    const int totalAnimals = floor(totalCells * _percentageAnimal);
+    const int totalWolves = floor(totalAnimals * _percentageWolves);
+    const int totalSheep = totalAnimals - totalWolves;
+
+    const int totalSaltMinerals = floor(totalCells * _percentageSaltMinerals);
+    const int totalGrass = totalCells - totalSaltMinerals;
+
+    for (int i = 0; i < totalWolves; ++i) {
+        auto wolf = make_unique<Wolf>(randomGender());
+        placeRandomAnimal(move(wolf));
+    }
+
+    for (int i = 0; i < totalSheep; ++i) {
+        auto sheep = make_unique<Sheep>(randomGender());
+        placeRandomAnimal(move(sheep));
+    }
+
+    for (int i = 0; i < totalSaltMinerals; ++i) {
+        auto salt_minerals = make_unique<SaltMinerals>();
+        placeRandomNaturalElement(move(salt_minerals));
+    }
+
+    for (int i = 0; i < totalGrass; ++i) {
+        auto grass = make_unique<Grass>();
+        placeRandomNaturalElement(move(grass));
+    }
+}
+
+Gender Universe::randomGender() {
+    return rand() % 2 == 0 ? Gender::Male : Gender::Female;
+}
+
+void Universe::placeRandomAnimal(unique_ptr<Animal> animal) {
+    int x, y;
+    do {
+        x = rand() % _size[0];
+        y = rand() % _size[1];
+    } while (!_cells[x][y].hasAnimal());
+
+    _cells[x][y].addAnimal(move(animal));
+}
+
+void Universe::placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element) {
+    int x, y;
+    do {
+        x = rand() % _size[0];
+        y = rand() % _size[1];
+    } while (!_cells[x][y].hasNaturalElement());
+
+    _cells[x][y].addNaturalElement(move(natural_element));
 }
 
 void Universe::nextGeneration() {
@@ -35,16 +94,22 @@ void Universe::processCell(int x, int y) {
     Cell& cell = _cells[x][y];
     Cell& nextCell = _nextCells[x][y];
 
-    if (cell.getAnimal() != nullptr) {
-        if (dynamic_cast<Sheep*>(cell.getAnimal())) {
+    auto animal = cell.getAnimal();
+    if (animal != nullptr) {
+        if (dynamic_cast<Sheep*>(animal)) {
             processSheep(x, y, cell, nextCell);
-        } else if (dynamic_cast<Wolf*>(cell.getAnimal())) {
+        } else if (dynamic_cast<Wolf*>(animal)) {
             processWolf(x, y, cell, nextCell);
         }
-    } else if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
-        processGrass(x, y, cell, nextCell);
-    } else if (dynamic_cast<SaltMinerals*>(cell.getNaturalElement())) {
-        processMinerals(x, y, cell, nextCell);
+    }
+
+    auto naturalElement = cell.getNaturalElement();
+    if (naturalElement != nullptr) {
+        if (dynamic_cast<Grass*>(naturalElement)) {
+            processGrass(x, y, cell, nextCell);
+        } else if (dynamic_cast<SaltMinerals*>(naturalElement)) {
+            processMinerals(x, y, cell, nextCell);
+        }
     }
 }
 
