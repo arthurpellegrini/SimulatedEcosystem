@@ -108,35 +108,43 @@ bool Universe::isDead() {
 
 void Universe::processNaturalElement(int x, int y) {
     Cell& cell = _cells[x][y];
-    Cell& nextCell = _nextCells[x][y];
 
-    auto naturalElement = cell.getNaturalElement();
     if (cell.hasNaturalElement()) {
-
-        // 1. SaltMinerals -> Les faire évoluer en grass
-        // 2. Grass -> Rien de spécial à faire
+        NaturalElement* naturalElement = cell.getNaturalElement();
 
         if (dynamic_cast<Grass*>(naturalElement)) {
-            nextCell.addNaturalElement(make_unique<Grass>(*dynamic_cast<Grass*>(naturalElement))); // On garde l'herbe
-            cell.removeNaturalElement();
+            processGrass(x, y);
         } else if (dynamic_cast<SaltMinerals*>(naturalElement)) {
-            dynamic_cast<SaltMinerals*>(naturalElement)->incrementAge();
-            if (dynamic_cast<SaltMinerals*>(naturalElement)->shouldTransform()) {
-                nextCell.addNaturalElement(make_unique<Grass>());
-                cell.removeNaturalElement();
-            } else { // On garde les minéraux
-                nextCell.addNaturalElement(make_unique<SaltMinerals>(*dynamic_cast<SaltMinerals*>(naturalElement)));
-                cell.removeNaturalElement();
-            }
+            processSaltMinerals(x, y);
         }
     }
+}
+
+
+void Universe::processGrass(int x, int y) {
+    Grass* grass = dynamic_cast<Grass*>(_cells[x][y].getNaturalElement());
+    _nextCells[x][y].addNaturalElement(make_unique<Grass>(*grass));
+    _cells[x][y].removeNaturalElement();
+}
+
+void Universe::processSaltMinerals(int x, int y) {
+    SaltMinerals* saltMinerals = dynamic_cast<SaltMinerals*>(_cells[x][y].getNaturalElement());
+    saltMinerals->incrementAge();
+
+    if (saltMinerals->shouldTransform()) {
+        _nextCells[x][y].addNaturalElement(make_unique<Grass>());
+    } else {
+        _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>(*saltMinerals));
+    }
+
+    _cells[x][y].removeNaturalElement();
 }
 
 void Universe::processAnimal(int x, int y) {
     Cell& cell = _cells[x][y];
 
     if (cell.hasAnimal()) {
-        auto animal = cell.getAnimal();
+        Animal* animal = cell.getAnimal();
         if (dynamic_cast<Sheep*>(animal)) {
             processSheep(x, y);
         } else if (dynamic_cast<Wolf*>(animal)) {
@@ -189,40 +197,6 @@ Cell& Universe::getNextRandomPosition(int x, int y) {
 
     return _nextCells[x][y];
 }
-
-// void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
-//     Sheep* sheep = dynamic_cast<Sheep*>(cell.getAnimal());
-//     sheep->increaseAge();
-//     sheep->decreaseSatiety();
-//
-//     if (sheep->getAge() > Sheep::getLifespan() || sheep->getSatiety() <= 0) {
-//         nextCell.addNaturalElement(make_unique<SaltMinerals>());
-//         cell.removeAnimal();
-//         return;
-//     }
-//
-//     // Eating logic
-//     if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
-//         sheep->eat();
-//         cell.removeNaturalElement();
-//     }
-//
-//     // Add movement and breeding logic here
-// }
-//
-// void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
-//     Wolf* wolf = dynamic_cast<Wolf*>(cell.getAnimal());
-//     wolf->increaseAge();
-//     wolf->decreaseSatiety();
-//
-//     if (wolf->getAge() > Wolf::getLifespan() || wolf->getSatiety() <= 0) {
-//         nextCell.addNaturalElement(make_unique<SaltMinerals>());
-//         cell.removeAnimal();
-//         return;
-//     }
-//
-//     // Add movement and breeding logic here
-// }
 
 int Universe::getGenerations() {
     return _generations;
