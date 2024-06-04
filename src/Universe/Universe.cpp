@@ -84,19 +84,17 @@ void Universe::nextGeneration() {
         }
     }
 
-
     // 3. Sheep -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
     // Si le sheep n'est pas à sa max satiété alors manger l'herbe (si existant) sur la case sur laquelle il a été déplacé
+
     // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
     // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            processAnimal(i, j);
+        }
+    }
 
-
-
-    // for (int i = 0; i < _size[0]; ++i) {
-    //     for (int j = 0; j < _size[1]; ++j) {
-    //         processCell(i, j);
-    //     }
-    // }
     _cells = move(_nextCells);
     _nextCells.resize(_size[0], vector<Cell>(_size[1]));
     _generations++;
@@ -106,7 +104,7 @@ vector<vector<Cell>>& Universe::getCells() {
     return _cells;
 }
 
-Cell& Universe::getCell(const std::pair<int, int>& coordinates) {
+Cell& Universe::getCell(const pair<int, int>& coordinates) {
     return _cells[coordinates.first][coordinates.second];
 }
 
@@ -136,76 +134,46 @@ void Universe::processNaturalElement(int x, int y) {
     }
 }
 
-void Universe::processCell(int x, int y) {
+void Universe::processAnimal(int x, int y) {
     Cell& cell = _cells[x][y];
     Cell& nextCell = _nextCells[x][y];
 
     auto animal = cell.getAnimal();
-    if (animal != nullptr) {
-        if (dynamic_cast<Sheep*>(animal)) {
-            processSheep(x, y, cell, nextCell);
-        } else if (dynamic_cast<Wolf*>(animal)) {
-            processWolf(x, y, cell, nextCell);
-        }
-    }
-
-    auto naturalElement = cell.getNaturalElement();
-    if (naturalElement != nullptr) {
-        if (dynamic_cast<Grass*>(naturalElement)) {
-            processGrass(x, y, cell, nextCell);
-        } else if (dynamic_cast<SaltMinerals*>(naturalElement)) {
-            processMinerals(x, y, cell, nextCell);
-        }
-    }
 }
-
-void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
-    Sheep* sheep = dynamic_cast<Sheep*>(cell.getAnimal());
-    sheep->increaseAge();
-    sheep->decreaseSatiety();
-
-    if (sheep->getAge() > Sheep::getLifespan() || sheep->getSatiety() <= 0) {
-        nextCell.addNaturalElement(make_unique<SaltMinerals>());
-        cell.removeAnimal();
-        return;
-    }
-
-    // Eating logic
-    if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
-        sheep->eat();
-        cell.removeNaturalElement();
-    }
-
-    // Add movement and breeding logic here
-}
-
-void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
-    Wolf* wolf = dynamic_cast<Wolf*>(cell.getAnimal());
-    wolf->increaseAge();
-    wolf->decreaseSatiety();
-
-    if (wolf->getAge() > Wolf::getLifespan() || wolf->getSatiety() <= 0) {
-        nextCell.addNaturalElement(make_unique<SaltMinerals>());
-        cell.removeAnimal();
-        return;
-    }
-
-    // Add movement and breeding logic here
-}
-
-void Universe::processGrass(int x, int y, Cell& cell, Cell& nextCell) {
-    nextCell.addNaturalElement(make_unique<Grass>());
-}
-
-void Universe::processMinerals(int x, int y, Cell& cell, Cell& nextCell) {
-    SaltMinerals* minerals = dynamic_cast<SaltMinerals*>(cell.getNaturalElement());
-    minerals->incrementAge();
-    if (minerals->shouldTransform()) {
-        nextCell.addNaturalElement(make_unique<Grass>());
-    } else {
-        nextCell.addNaturalElement(make_unique<SaltMinerals>(*minerals));
-    }
-}
+//
+// void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
+//     Sheep* sheep = dynamic_cast<Sheep*>(cell.getAnimal());
+//     sheep->increaseAge();
+//     sheep->decreaseSatiety();
+//
+//     if (sheep->getAge() > Sheep::getLifespan() || sheep->getSatiety() <= 0) {
+//         nextCell.addNaturalElement(make_unique<SaltMinerals>());
+//         cell.removeAnimal();
+//         return;
+//     }
+//
+//     // Eating logic
+//     if (dynamic_cast<Grass*>(cell.getNaturalElement())) {
+//         sheep->eat();
+//         cell.removeNaturalElement();
+//     }
+//
+//     // Add movement and breeding logic here
+// }
+//
+// void Universe::processWolf(int x, int y, Cell& cell, Cell& nextCell) {
+//     Wolf* wolf = dynamic_cast<Wolf*>(cell.getAnimal());
+//     wolf->increaseAge();
+//     wolf->decreaseSatiety();
+//
+//     if (wolf->getAge() > Wolf::getLifespan() || wolf->getSatiety() <= 0) {
+//         nextCell.addNaturalElement(make_unique<SaltMinerals>());
+//         cell.removeAnimal();
+//         return;
+//     }
+//
+//     // Add movement and breeding logic here
+// }
 
 int Universe::getGenerations() {
     return _generations;
