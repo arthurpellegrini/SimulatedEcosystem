@@ -137,30 +137,10 @@ void Universe::processAnimal(int x, int y) {
 
     if (cell.hasAnimal()) {
         auto animal = cell.getAnimal();
-
         if (dynamic_cast<Sheep*>(animal)) {
-            Sheep sheep = *dynamic_cast<Sheep*>(animal);
-            sheep.increaseAge();
-
-            if(!sheep.isDead()) {
-                sheep.decreaseSatiety();
-
-                Cell& nextCell = getNextRandomPosition(x, y);
-
-                if(nextCell.hasNaturalElement()) {
-                    if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
-                        sheep.eat();
-                        nextCell.removeNaturalElement();
-                    }
-                }
-
-                nextCell.addAnimal(make_unique<Sheep>(sheep));
-            } else { // Mort Naturelle
-                Cell& nextCell = _nextCells[x][y];
-                nextCell.addNaturalElement(make_unique<SaltMinerals>());
-                cell.removeAnimal();
-            }
-
+            processSheep(x, y);
+        } else if (dynamic_cast<Wolf*>(animal)) {
+            // processWolf(x, y);
         }
 
         // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
@@ -168,9 +148,29 @@ void Universe::processAnimal(int x, int y) {
     }
 }
 
+void Universe::processSheep(int x, int y) {
+    Sheep sheep = *dynamic_cast<Sheep*>(_cells[x][y].getAnimal());
+    sheep.increaseAge();
+
+    if(sheep.isDead()) { // Mort Naturelle
+        _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>());
+        _cells[x][y].removeAnimal();
+    } else {
+        sheep.decreaseSatiety();
+
+        Cell& nextCell = getNextRandomPosition(x, y);
+
+        if(nextCell.hasNaturalElement()) {
+            if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
+                sheep.eat();
+                nextCell.removeNaturalElement();
+            }
+        }
+        nextCell.addAnimal(make_unique<Sheep>(sheep));
+    }
+}
 
 Cell& Universe::getNextRandomPosition(int x, int y) {
-    // 8 directions possibles
     vector <pair<int, int>> possibleMoves = {
         {x-1, y-1}, {x-1, y}, {x-1, y+1},
         {x, y-1}, {x, y+1},
@@ -189,7 +189,7 @@ Cell& Universe::getNextRandomPosition(int x, int y) {
 
     return _nextCells[x][y];
 }
-//
+
 // void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
 //     Sheep* sheep = dynamic_cast<Sheep*>(cell.getAnimal());
 //     sheep->increaseAge();

@@ -32,6 +32,7 @@ private:
     void processCell(int x, int y);
     void processNaturalElement(int x, int y);
     void processAnimal(int x, int y);
+    void processSheep(int x, int y);
     Cell& getNextRandomPosition(int x, int y);
 
     static const float _percentageAnimal;
