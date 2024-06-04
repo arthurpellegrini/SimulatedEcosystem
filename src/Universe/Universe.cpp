@@ -75,8 +75,6 @@ void Universe::nextGeneration() {
     // Dans cette fonction, l'idée est de déplacer progressivement les entitées vers la prochaine génération
     // On déplace vers la case à la même position sur l'autre tableau
     // Voici l'ordre:
-    // 1. SaltMinerals -> Les faire évoluer en grass
-    // 2. Grass -> Rien de spécial à faire
 
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
@@ -84,11 +82,6 @@ void Universe::nextGeneration() {
         }
     }
 
-    // 3. Sheep -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
-    // Si le sheep n'est pas à sa max satiété alors manger l'herbe (si existant) sur la case sur laquelle il a été déplacé
-
-    // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
-    // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
             processAnimal(i, j);
@@ -117,7 +110,11 @@ void Universe::processNaturalElement(int x, int y) {
     Cell& nextCell = _nextCells[x][y];
 
     auto naturalElement = cell.getNaturalElement();
-    if (naturalElement != nullptr) {
+    if (cell.hasNaturalElement()) {
+
+        // 1. SaltMinerals -> Les faire évoluer en grass
+        // 2. Grass -> Rien de spécial à faire
+
         if (dynamic_cast<Grass*>(naturalElement)) {
             nextCell.addNaturalElement(make_unique<Grass>(*dynamic_cast<Grass*>(naturalElement))); // On garde l'herbe
             cell.removeNaturalElement();
@@ -138,7 +135,36 @@ void Universe::processAnimal(int x, int y) {
     Cell& cell = _cells[x][y];
     Cell& nextCell = _nextCells[x][y];
 
-    auto animal = cell.getAnimal();
+    if (cell.hasAnimal()) {
+        // 3. Sheep -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
+        // Si le sheep n'est pas à sa max satiété alors manger l'herbe (si existant) sur la case sur laquelle il a été déplacé
+        auto animal = cell.getAnimal();
+
+        if (dynamic_cast<Sheep*>(animal)) {
+            Sheep sheep = *dynamic_cast<Sheep*>(animal);
+            sheep.increaseAge();
+
+            if(!sheep.isDead()) {
+                sheep.decreaseSatiety();
+
+                // Déplacement + Manger Herbe
+                if(nextCell.hasNaturalElement()) {
+                    if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
+                        sheep.eat();
+                        nextCell.removeNaturalElement();
+                    }
+                }
+
+                nextCell.addAnimal(make_unique<Sheep>(sheep));
+            }
+            cell.removeAnimal();
+        }
+
+
+
+        // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
+        // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
+    }
 }
 //
 // void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
