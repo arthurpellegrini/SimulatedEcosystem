@@ -13,4 +13,7 @@ add_executable(SimulatedEcosystem main.cpp
         src/NaturalElement/Grass.cpp
         src/NaturalElement/SaltMinerals.cpp
         src/Animal/Wolf.cpp
-        src/Animal/Sheep.cpp)
+        src/Animal/Sheep.cpp
+        src/Save/UniverseExporter.cpp
+        src/Save/UniverseImporter.h
+        src/Save/UniverseImporter.cpp)
