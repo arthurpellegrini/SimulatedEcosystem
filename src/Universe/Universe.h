@@ -32,6 +32,7 @@ private:
     void processCell(int x, int y);
     void processNaturalElement(int x, int y);
     void processAnimal(int x, int y);
+    Cell& getNextSheepPosition(int x, int y);
 
     static const float _percentageAnimal;
     static const float _percentageWolves;

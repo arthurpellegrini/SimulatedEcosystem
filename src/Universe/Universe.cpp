@@ -1,5 +1,6 @@
 #include "Universe.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include "../Animal/Wolf.h"
@@ -133,11 +134,9 @@ void Universe::processNaturalElement(int x, int y) {
 
 void Universe::processAnimal(int x, int y) {
     Cell& cell = _cells[x][y];
-    Cell& nextCell = _nextCells[x][y];
+    // Cell& nextCell = _nextCells[x][y]; // Declare nextCell here
 
     if (cell.hasAnimal()) {
-        // 3. Sheep -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
-        // Si le sheep n'est pas à sa max satiété alors manger l'herbe (si existant) sur la case sur laquelle il a été déplacé
         auto animal = cell.getAnimal();
 
         if (dynamic_cast<Sheep*>(animal)) {
@@ -147,7 +146,8 @@ void Universe::processAnimal(int x, int y) {
             if(!sheep.isDead()) {
                 sheep.decreaseSatiety();
 
-                // Déplacement + Manger Herbe
+                Cell& nextCell = getNextSheepPosition(x, y);
+
                 if(nextCell.hasNaturalElement()) {
                     if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
                         sheep.eat();
@@ -160,11 +160,31 @@ void Universe::processAnimal(int x, int y) {
             cell.removeAnimal();
         }
 
-
-
         // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
         // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
     }
+}
+
+
+Cell& Universe::getNextSheepPosition(int x, int y) {
+    // 8 directions possibles
+    vector <pair<int, int>> possibleMoves = {
+        {x-1, y-1}, {x-1, y}, {x-1, y+1},
+        {x, y-1}, {x, y+1},
+        {x+1, y-1}, {x+1, y}, {x+1, y+1}
+    };
+
+    random_shuffle(possibleMoves.begin(), possibleMoves.end());
+
+    for(auto move : possibleMoves) {
+        if(move.first >= 0 && move.first < _size[0] && move.second >= 0 && move.second < _size[1]) {
+            if(!_nextCells[move.first][move.second].hasAnimal()) {
+                return _nextCells[move.first][move.second];
+            }
+        }
+    }
+
+    return _nextCells[x][y];
 }
 //
 // void Universe::processSheep(int x, int y, Cell& cell, Cell& nextCell) {
