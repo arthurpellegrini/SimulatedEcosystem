@@ -11,6 +11,7 @@ using namespace std;
 class Animal {
 public:
     Animal(Gender gender);
+    Animal(int age, int satiety, Gender gender);
 
     virtual string display() const = 0;
 

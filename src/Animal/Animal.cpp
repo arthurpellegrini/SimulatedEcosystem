@@ -5,6 +5,8 @@ const int Animal::_maxSatiety = 25;
 
 
 Animal::Animal(Gender gender) : _age(0), _gender(gender), _satiety(_maxSatiety) {}
+Animal::Animal(int age, int satiety, Gender gender) : _age(age), _satiety(satiety), _gender(gender) {}
+
 
 int Animal::getAge() const {
     return _age;
