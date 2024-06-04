@@ -40,11 +40,11 @@ bool Cell::isEmpty() const {
 }
 
 bool Cell::hasAnimal() const {
-    return !_animal;
+    return _animal!=nullptr;
 }
 
 bool Cell::hasNaturalElement() const {
-    return !_natural_element;
+    return _natural_element!=nullptr;
 }
 
 vector<int> Cell::getPosition() const {

@@ -56,7 +56,7 @@ void Universe::placeRandomAnimal(unique_ptr<Animal> animal) {
     do {
         x = rand() % _size[0];
         y = rand() % _size[1];
-    } while (!_cells[x][y].hasAnimal());
+    } while (_cells[x][y].hasAnimal());
 
     _cells[x][y].addAnimal(move(animal));
 }
@@ -66,12 +66,15 @@ void Universe::placeRandomNaturalElement(unique_ptr<NaturalElement> natural_elem
     do {
         x = rand() % _size[0];
         y = rand() % _size[1];
-    } while (!_cells[x][y].hasNaturalElement());
+    } while (_cells[x][y].hasNaturalElement());
 
     _cells[x][y].addNaturalElement(move(natural_element));
 }
 
 void Universe::nextGeneration() {
+    // Déplace les
+
+
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
             processCell(i, j);
