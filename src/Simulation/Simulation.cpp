@@ -15,7 +15,7 @@ Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(fals
         std::cerr << "Error : " << e.what() << '\n';
     }
 
-    _simulationView->displayCells(*_universe);
+    _simulationView->display(*_universe);
 }
 
 void Simulation::start() {
@@ -51,7 +51,7 @@ void Simulation::simulationLoop() {
         if (!_isPaused) {
             if (!_universe->isDead()) {
                 _universe->nextGeneration();
-                _simulationView->displayCells(*_universe);
+                _simulationView->display(*_universe);
             } else {
                 _simulationView->displayEndSimulation(*_universe);
                 stop();

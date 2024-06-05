@@ -15,7 +15,7 @@ public:
     SimulationView(bool showCoordinates, bool showQuantities, bool showMessages, bool showGeneration);
     SimulationView();
 
-    void displayCells(Universe& universe);
+    void display(Universe& universe);
     void printUniverse(Universe& universe);
     vector<int> requestDimensions() const;
     char displayPauseMenu() const;
@@ -25,10 +25,10 @@ private:
     void printSeparator(int cols, bool header) const;
     int getValidIntegerInput(const string& prompt) const;
 
-    bool showCoordinates_;
-    bool showQuantities_;
-    bool showMessages_;
-    bool showGeneration_;
+    bool _showCoordinates;
+    bool _showQuantities;
+    bool _showMessages;
+    bool _showGeneration;
 };
 
 #endif // SIMULATIONVIEW_H
