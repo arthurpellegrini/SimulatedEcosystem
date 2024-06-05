@@ -267,6 +267,5 @@ int Universe::getWolfQuantity() {
 }
 
 bool Universe::isDead() {
-    cout << "Sheep: " << _sheepQuantity << " Wolf: " << _wolfQuantity << endl;
     return _wolfQuantity == 0 && _sheepQuantity == 0;
 }
