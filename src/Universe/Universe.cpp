@@ -73,10 +73,6 @@ void Universe::placeRandomNaturalElement(unique_ptr<NaturalElement> natural_elem
 }
 
 void Universe::nextGeneration() {
-    // Dans cette fonction, l'idée est de déplacer progressivement les entitées vers la prochaine génération
-    // On déplace vers la case à la même position sur l'autre tableau
-    // Voici l'ordre:
-
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
             processNaturalElement(i, j);
@@ -92,18 +88,6 @@ void Universe::nextGeneration() {
     _cells = move(_nextCells);
     _nextCells.resize(_size[0], vector<Cell>(_size[1]));
     _generations++;
-}
-
-vector<vector<Cell>>& Universe::getCells() {
-    return _cells;
-}
-
-Cell& Universe::getCell(const pair<int, int>& coordinates) {
-    return _cells[coordinates.first][coordinates.second];
-}
-
-bool Universe::isDead() {
-    return _isDead;
 }
 
 void Universe::processNaturalElement(int x, int y) {
@@ -243,4 +227,16 @@ Cell& Universe::getNextRandomWolfPosition(int x, int y) {
 
 int Universe::getGenerations() {
     return _generations;
+}
+
+vector<vector<Cell>>& Universe::getCells() {
+    return _cells;
+}
+
+Cell& Universe::getCell(const pair<int, int>& coordinates) {
+    return _cells[coordinates.first][coordinates.second];
+}
+
+bool Universe::isDead() {
+    return _isDead;
 }
