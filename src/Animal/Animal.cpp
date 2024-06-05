@@ -7,7 +7,6 @@ Animal::Animal(Gender gender, int maxSatiety, int lifespan, int age, int satiety
 
 Animal::~Animal() {}
 
-
 void Animal::increaseAge() { _age++; }
 bool Animal::isDead() const { return _satiety <= 0 || _age >= _lifespan; }
 
