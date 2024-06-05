@@ -7,33 +7,33 @@
 
 using namespace std;
 
-
 class Animal {
 public:
-    Animal(Gender gender);
-    Animal(int age, int satiety, Gender gender);
+    Animal(Gender gender, int maxSatiety, int lifespan);
+    Animal(Gender gender, int maxSatiety, int lifespan, int age, int satiety);
+
+    virtual ~Animal();
+
+    void increaseAge();
+    bool isDead() const;
+
+    void eat();
+    void decreaseSatiety();
+
+    bool canBreed(const Animal &animal) const;
 
     virtual string display() const = 0;
 
-    virtual void eat() = 0;
-    virtual void move() = 0;
-    virtual void breed() = 0;
-    virtual void die() = 0;
-
     int getAge() const;
-    Gender getGender() const;
     int getSatiety() const;
-    void increaseAge();
-    void resetSatiety(int value);
-    void decreaseSatiety();
-
-    virtual ~Animal();
+    Gender getGender() const;
 
 protected:
     int _age;
     Gender _gender;
     int _satiety;
-    static const int _maxSatiety;
+    int _maxSatiety;
+    int _lifespan;
 };
 
 ostream& operator<<(ostream &os, const Animal &animal);

@@ -3,12 +3,11 @@
 
 const int Wolf::_maxSatiety = 10;
 const int Wolf::_lifespan = 60;
-const int Wolf::_fov = 1;
 
 
-Wolf::Wolf(Gender gender) : Animal(gender) {
-    _satiety = _maxSatiety;
-}
+Wolf::Wolf(Gender gender) : Animal(gender, _maxSatiety, _lifespan) {}
+Wolf::Wolf(Gender gender, int age, int satiety) : Animal(gender, _maxSatiety, _lifespan, age, satiety) {}
+
 
 Wolf::Wolf(int age, int satiety, Gender gender) : Animal(age, satiety, gender) {}
 
@@ -17,22 +16,4 @@ string Wolf::display() const {
     return "W";
 }
 
-void Wolf::eat() {
-    _satiety = _maxSatiety;
-}
 
-void Wolf::move() {
-    // Logic for moving within the field of view
-}
-
-void Wolf::breed() {
-    // Logic for breeding
-}
-
-void Wolf::die() {
-    // Logic for dying
-}
-
-int Wolf::getLifespan() {
-    return _lifespan;
-}
