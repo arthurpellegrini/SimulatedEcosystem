@@ -59,16 +59,21 @@ NaturalElement* Cell::getNaturalElement() const {
     return _natural_element.get();
 }
 
-ostream& operator<<(ostream& os, const Cell& cell) {
-    if (cell._animal) {
-        os << cell._animal->display();
+string Cell::display() const {
+    string output;
+    if (this->_animal) {
+        output = this->_animal->display();
     } else {
-        os << " ";
+        output = " ";
     }
-    if (cell._natural_element) {
-        os << cell._natural_element->display();
+    if (this->_natural_element) {
+        output += this->_natural_element->display();
     } else {
-        os << " ";
+        output += " ";
     }
-    return os;
+    return output;
+}
+
+ostream& operator<<(ostream &os, const Cell& cell) {
+    return os << cell.display();
 }

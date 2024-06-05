@@ -6,20 +6,67 @@
 #include <limits>
 
 
-void SimulationView::displayCells(Universe& universe) const {
-    const auto& cells = universe.getCells();
-    for (const auto& row : cells) {
-        printSeparator(row.size());
-        for (const auto& element : row) {
-            cout << "| " << element << " ";
-        }
-        cout << "|\n";
-    }
-    printSeparator(cells[0].size());
+const char line = '-';
+const char corner = '+';
+const char vertical = '|';
 
-    cout << "Generation " << universe.getGenerations();
-    cout << " | Sheep: " << universe.getSheepQuantity() << " | Wolf: " << universe.getWolfQuantity() << endl;
-    cout << endl;
+const int width = 5;
+
+
+SimulationView::SimulationView(bool showCoordinates, bool showQuantities, bool showMessages, bool showGeneration)
+    : showCoordinates_(showCoordinates), showQuantities_(showQuantities), showMessages_(showMessages), showGeneration_(showGeneration) {}
+
+SimulationView::SimulationView()
+    : SimulationView(true, true, true, true) {}
+
+void SimulationView::displayCells(Universe& universe) {
+    printUniverse(universe);
+
+    cout << setw(width+1) << " ";
+    cout << setw(20) << centered("Generation: " + to_string(universe.getGenerations()));
+    cout << vertical << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+    cout << vertical << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+    cout << endl << endl;
+}
+
+void SimulationView::printUniverse(Universe& universe) {
+    const vector<vector<Cell>>& cells = universe.getCells();
+    const int nbCols = cells[0].size();
+    char letter = 'A';
+
+    printSeparator(nbCols, true);
+    for (int i = 0; i < cells.size(); ++i) {
+        printSeparator(nbCols, false);
+
+        // Letter
+        cout << setw(width) << centered(string(1, letter++)) << vertical;
+        for (int y = 0; y < nbCols; ++y) {
+            cout << setw(width) << centered(cells[i][y].display()) << vertical;
+
+        }
+        cout << endl;
+
+        if (i == cells.size() - 1) {
+            printSeparator(nbCols, false);
+        }
+    }
+}
+
+void SimulationView::printSeparator(int cols, bool header) const {
+    if (header) {
+        cout << setw(width+1) << " ";
+        for (int i = 0; i < cols; ++i) {
+            cout << setw(width) << centered(to_string(i)) << " ";
+        }
+        cout << endl;
+    } else {
+        cout << setw(width+1) << corner;
+        const string side = string(width, line) + string(1, corner);
+        for (int i = 0; i < cols; ++i) {
+            cout << setw(width) << side;
+        }
+        cout << endl;
+    }
 }
 
 vector<int> SimulationView::requestDimensions() const {
@@ -27,14 +74,6 @@ vector<int> SimulationView::requestDimensions() const {
     int y = getValidIntegerInput("How many columns ?");
     cout << '\n';
     return {x, y};
-}
-
-void SimulationView::printSeparator(int cols) const {
-    cout << '+';
-    for (int i = 0; i < cols; ++i) {
-        cout << "----+";
-    }
-    cout << '\n';
 }
 
 int SimulationView::getValidIntegerInput(const string& prompt) const {
