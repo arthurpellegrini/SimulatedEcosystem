@@ -44,16 +44,6 @@ void Universe::generateRandomUniverse() {
         auto sheep = make_unique<Sheep>(randomGender());
         placeRandomAnimal(move(sheep));
     }
-
-    // for (int i = 0; i < totalSaltMinerals; ++i) {
-    //     auto salt_minerals = make_unique<SaltMinerals>();
-    //     placeRandomNaturalElement(move(salt_minerals));
-    // }
-    //
-    // for (int i = 0; i < totalGrass; ++i) {
-    //     auto grass = make_unique<Grass>();
-    //     placeRandomNaturalElement(move(grass));
-    // }
 }
 
 Gender Universe::randomGender() {
