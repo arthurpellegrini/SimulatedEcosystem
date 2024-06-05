@@ -74,14 +74,14 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
             switch (element) {
                 case 'W':
                 {
-                    std::unique_ptr<Wolf> wolf = std::make_unique<Wolf>(age , satiety, gender);
+                    std::unique_ptr<Wolf> wolf = std::make_unique<Wolf>(gender, age, satiety);
                     cell.addAnimal(std::move(wolf));
                 }
                     break;
 
                 case 'S':
                 {
-                    std::unique_ptr<Sheep> sheep = std::make_unique<Sheep>(age, satiety, gender);
+                    std::unique_ptr<Sheep> sheep = std::make_unique<Sheep>(gender, age, satiety);
                     cell.addAnimal(std::move(sheep));
                 }
                     break;
