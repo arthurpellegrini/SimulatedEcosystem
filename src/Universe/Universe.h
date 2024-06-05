@@ -21,6 +21,9 @@ public:
     int getSheepQuantity();
     int getWolfQuantity();
 
+    void setSheepQuantity(int sheepQuantity);
+    void setWolfQuantity(int wolfQuantity);
+
 
 private:
     vector<int> _size;

@@ -1,8 +1,12 @@
 #include "Simulation.h"
+#include "../Save/UniverseExporter.h"
+#include "../Save/UniverseImporter.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <conio.h>
+#include <fstream>
+#include <filesystem>
 
 const vector<int> Simulation::_dimensions = {10, 10};
 
@@ -39,12 +43,20 @@ void Simulation::stop() {
 }
 
 void Simulation::save() {
-    cout << "WIP: Clément's method" << endl;
+    string fileName = UniverseExporter::exportToFile("save", _universe);
+    std::ifstream file(fileName);
+    if (file.good()) {
+        cout << "Universe saved to " << fileName << endl;
+    } else {
+        cout << "Error: Could not save universe" << endl;
+    }
+    pause();
 }
 
 void Simulation::load() {
-    cout << "WIP: Clément's method" << endl;
+
 }
+
 
 void Simulation::simulationLoop() {
     while (!_isStopped) {

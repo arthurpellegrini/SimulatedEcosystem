@@ -269,3 +269,11 @@ int Universe::getWolfQuantity() {
 bool Universe::isDead() {
     return _wolfQuantity == 0 && _sheepQuantity == 0;
 }
+
+void Universe::setSheepQuantity(int sheepQuantity) {
+    _sheepQuantity = sheepQuantity;
+}
+
+void Universe::setWolfQuantity(int wolfQuantity) {
+    _wolfQuantity = wolfQuantity;
+}
