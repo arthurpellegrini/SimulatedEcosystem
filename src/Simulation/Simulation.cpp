@@ -9,7 +9,12 @@ const vector<int> Simulation::_dimensions = {10, 10};
 Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(false) {
     _simulationView = new SimulationView();
     // const auto dimensions = simulationView->requestDimensions();
-    _universe = new Universe(_dimensions);
+    try {
+        _universe = new Universe(_dimensions, 20, 2);
+    } catch (const std::exception& e) {
+        std::cerr << "Erreur : " << e.what() << '\n';
+    }
+
     _simulationView->displayCells(*_universe);
 }
 
@@ -44,8 +49,14 @@ void Simulation::load() {
 void Simulation::simulationLoop() {
     while (!_isStopped) {
         if (!_isPaused) {
-            _universe->nextGeneration();
-            _simulationView->displayCells(*_universe);
+            if (!_universe->isDead()) {
+                _universe->nextGeneration();
+                _simulationView->displayCells(*_universe);
+            } else {
+                _simulationView->displayEndSimulation(*_universe);
+                stop();
+                break;
+            }
         }
 
         if (_kbhit()) { 
@@ -59,8 +70,6 @@ void Simulation::simulationLoop() {
 
         this_thread::sleep_for(chrono::seconds(1));
     }
-
-    _simulationView->displayEndSimulation(*_universe);
 }
 
 void Simulation::handlePauseMenu() {

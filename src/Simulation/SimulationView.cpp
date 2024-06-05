@@ -7,8 +7,6 @@
 
 
 void SimulationView::displayCells(Universe& universe) const {
-    cout << "Generation " << universe.getGenerations() << endl;
-
     const auto& cells = universe.getCells();
     for (const auto& row : cells) {
         printSeparator(row.size());
@@ -18,6 +16,10 @@ void SimulationView::displayCells(Universe& universe) const {
         cout << "|\n";
     }
     printSeparator(cells[0].size());
+
+    cout << "Generation " << universe.getGenerations();
+    cout << " | Sheep: " << universe.getSheepQuantity() << " | Wolf: " << universe.getWolfQuantity() << endl;
+    cout << endl;
 }
 
 vector<int> SimulationView::requestDimensions() const {
