@@ -10,7 +10,7 @@
 
 class UniverseImporter {
     public:
-    static Universe importFromFile(const std::string& filename);
+    static Universe* importFromFile(const std::string& filename);
 
 };
 
