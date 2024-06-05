@@ -148,11 +148,8 @@ void Universe::processAnimal(int x, int y) {
         if (dynamic_cast<Sheep*>(animal)) {
             processSheep(x, y);
         } else if (dynamic_cast<Wolf*>(animal)) {
-            // processWolf(x, y);
+            processWolf(x, y);
         }
-
-        // 4. Wolf -> Les faire se déplacer sur une case aléatoire adjacente, si possible sinon rester au même endroit
-        // Si le wolf n'est pas à sa max satiété alors manger le sheep (si existant) sur la case sur laquelle il a été déplacé
     }
 }
 
@@ -166,7 +163,7 @@ void Universe::processSheep(int x, int y) {
     } else {
         sheep.decreaseSatiety();
 
-        Cell& nextCell = getNextRandomPosition(x, y);
+        Cell& nextCell = getNextRandomSheepPosition(x, y);
 
         if(nextCell.hasNaturalElement()) {
             if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
@@ -178,7 +175,30 @@ void Universe::processSheep(int x, int y) {
     }
 }
 
-Cell& Universe::getNextRandomPosition(int x, int y) {
+
+void Universe::processWolf(int x, int y) {
+    Wolf wolf = *dynamic_cast<Wolf*>(_cells[x][y].getAnimal());
+    wolf.increaseAge();
+
+    if(wolf.isDead()) { // Mort Naturelle
+        _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>());
+        _cells[x][y].removeAnimal();
+    } else {
+        wolf.decreaseSatiety();
+
+        Cell& nextCell = getNextRandomWolfPosition(x, y);
+
+        if(nextCell.hasAnimal()) {
+            if(dynamic_cast<Sheep*>(nextCell.getAnimal())) {
+                wolf.eat();
+                nextCell.removeAnimal();
+            }
+        }
+        nextCell.addAnimal(make_unique<Wolf>(wolf));
+    }
+}
+
+Cell& Universe::getNextRandomSheepPosition(int x, int y) {
     vector <pair<int, int>> possibleMoves = {
         {x-1, y-1}, {x-1, y}, {x-1, y+1},
         {x, y-1}, {x, y+1},
@@ -188,13 +208,36 @@ Cell& Universe::getNextRandomPosition(int x, int y) {
     random_shuffle(possibleMoves.begin(), possibleMoves.end());
 
     for(auto move : possibleMoves) {
+        // If in the grid
         if(move.first >= 0 && move.first < _size[0] && move.second >= 0 && move.second < _size[1]) {
+            // If there is no animals
             if(!_nextCells[move.first][move.second].hasAnimal()) {
                 return _nextCells[move.first][move.second];
             }
         }
     }
 
+    return _nextCells[x][y];
+}
+
+Cell& Universe::getNextRandomWolfPosition(int x, int y) {
+    vector <pair<int, int>> possibleMoves = {
+        {x-1, y-1}, {x-1, y}, {x-1, y+1},
+        {x, y-1}, {x, y+1},
+        {x+1, y-1}, {x+1, y}, {x+1, y+1}
+    };
+
+    random_shuffle(possibleMoves.begin(), possibleMoves.end());
+
+    for(auto move : possibleMoves) {
+        // If in the grid
+        if(move.first >= 0 && move.first < _size[0] && move.second >= 0 && move.second < _size[1]) {
+            // If there is no wolf
+            if (dynamic_cast<Sheep*>(_nextCells[move.first][move.second].getAnimal()) || !_nextCells[move.first][move.second].hasAnimal()) {
+                return _nextCells[move.first][move.second];
+            }
+        }
+    }
     return _nextCells[x][y];
 }
 

@@ -37,8 +37,10 @@ private:
 
     void processAnimal(int x, int y);
     void processSheep(int x, int y);
+    void processWolf(int x, int y);
 
-    Cell& getNextRandomPosition(int x, int y);
+    Cell& getNextRandomSheepPosition(int x, int y);
+    Cell& getNextRandomWolfPosition(int x, int y);
 
     static const float _percentageAnimal;
     static const float _percentageWolves;
