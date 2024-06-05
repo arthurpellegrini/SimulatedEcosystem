@@ -22,11 +22,25 @@ SimulationView::SimulationView()
 void SimulationView::displayCells(Universe& universe) {
     printUniverse(universe);
 
-    cout << setw(width+1) << " ";
-    cout << setw(20) << centered("Generation: " + to_string(universe.getGenerations()));
-    cout << vertical << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
-    cout << vertical << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
-    cout << endl << endl;
+    if (showCoordinates_) cout << setw(width+1) << " ";
+    if (showQuantities_ && showGeneration_) {
+        cout << setw(20) << centered("Generation: " + to_string(universe.getGenerations()));
+        cout << vertical << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+        cout << vertical << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << endl << endl;
+    }
+    else if (showGeneration_) {
+        cout << setw(60) << centered("Generation: " + to_string(universe.getGenerations()));
+        cout << endl << endl;
+    }
+    else if (showQuantities_) {
+        cout << setw(30) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+        cout << vertical << setw(30) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << endl << endl;
+    }
+    else {
+        cout << endl;
+    }
 }
 
 void SimulationView::printUniverse(Universe& universe) {
@@ -34,12 +48,12 @@ void SimulationView::printUniverse(Universe& universe) {
     const int nbCols = cells[0].size();
     char letter = 'A';
 
-    printSeparator(nbCols, true);
+    if(showCoordinates_) printSeparator(nbCols, true);
     for (int i = 0; i < cells.size(); ++i) {
         printSeparator(nbCols, false);
 
-        // Letter
-        cout << setw(width) << centered(string(1, letter++)) << vertical;
+        if(showCoordinates_) cout << setw(width) << centered(string(1, letter++)) << vertical;
+        else cout << vertical;
         for (int y = 0; y < nbCols; ++y) {
             cout << setw(width) << centered(cells[i][y].display()) << vertical;
 
@@ -60,7 +74,8 @@ void SimulationView::printSeparator(int cols, bool header) const {
         }
         cout << endl;
     } else {
-        cout << setw(width+1) << corner;
+        if(showCoordinates_) cout <<  setw(width+1) << corner;
+        else cout << corner;
         const string side = string(width, line) + string(1, corner);
         for (int i = 0; i < cols; ++i) {
             cout << setw(width) << side;
