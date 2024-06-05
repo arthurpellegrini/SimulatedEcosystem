@@ -12,7 +12,7 @@ Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(fals
     try {
         _universe = new Universe(_dimensions, 20, 2);
     } catch (const std::exception& e) {
-        std::cerr << "Erreur : " << e.what() << '\n';
+        std::cerr << "Error : " << e.what() << '\n';
     }
 
     _simulationView->displayCells(*_universe);

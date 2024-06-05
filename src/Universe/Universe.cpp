@@ -25,19 +25,9 @@ void Universe::generateRandomUniverse() {
     const int totalCells = _size[0] * _size[1];
     const int totalAnimals = _sheepQuantity + _wolfQuantity;
 
-    // Formaliser une erreur si le nombre d'animaux est supérieur au nombre de cellules
     if (totalAnimals > totalCells) {
         throw invalid_argument("The number of animals is greater than the number of cells");
-        exit(0);
     }
-    //
-    //
-    // const int totalAnimals = floor(totalCells * _percentageAnimal);
-    // const int totalWolves = floor(totalAnimals * _percentageWolves);
-    // const int totalSheep = totalAnimals - totalWolves;
-    //
-    // const int totalSaltMinerals = floor(totalCells * _percentageSaltMinerals);
-    // const int totalGrass = totalCells - totalSaltMinerals;
 
     for (int x = 0; x < _size[0]; ++x) {
         for (int y = 0; y < _size[1]; ++y) {
