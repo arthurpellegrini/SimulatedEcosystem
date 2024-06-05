@@ -12,10 +12,10 @@ Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(fals
     try {
         _universe = new Universe(_dimensions, 20, 2);
     } catch (const std::exception& e) {
-        std::cerr << "Erreur : " << e.what() << '\n';
+        std::cerr << "Error : " << e.what() << '\n';
     }
 
-    _simulationView->displayCells(*_universe);
+    _simulationView->display(*_universe);
 }
 
 void Simulation::start() {
@@ -51,7 +51,7 @@ void Simulation::simulationLoop() {
         if (!_isPaused) {
             if (!_universe->isDead()) {
                 _universe->nextGeneration();
-                _simulationView->displayCells(*_universe);
+                _simulationView->display(*_universe);
             } else {
                 _simulationView->displayEndSimulation(*_universe);
                 stop();

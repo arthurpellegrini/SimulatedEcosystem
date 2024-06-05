@@ -28,6 +28,7 @@ public:
     Animal* getAnimal() const;
     NaturalElement* getNaturalElement() const;
 
+    string display() const;
     friend ostream& operator<<(ostream& os, const Cell& cell);
 
 private:

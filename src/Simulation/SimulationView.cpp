@@ -6,20 +6,87 @@
 #include <limits>
 
 
-void SimulationView::displayCells(Universe& universe) const {
-    const auto& cells = universe.getCells();
-    for (const auto& row : cells) {
-        printSeparator(row.size());
-        for (const auto& element : row) {
-            cout << "| " << element << " ";
-        }
-        cout << "|\n";
-    }
-    printSeparator(cells[0].size());
+constexpr char LINE_CHAR = '-';
+constexpr char CORNER_CHAR = '+';
+constexpr char VERTICAL_CHAR = '|';
 
-    cout << "Generation " << universe.getGenerations();
-    cout << " | Sheep: " << universe.getSheepQuantity() << " | Wolf: " << universe.getWolfQuantity() << endl;
-    cout << endl;
+constexpr int CELL_WIDTH = 5;
+
+
+SimulationView::SimulationView(bool showCoordinates, bool showQuantities, bool showMessages, bool showGeneration)
+    : _showCoordinates(showCoordinates), _showQuantities(showQuantities), _showMessages(showMessages), _showGeneration(showGeneration) {}
+
+SimulationView::SimulationView()
+    : SimulationView(true, true, true, true) {}
+
+void SimulationView::display(Universe& universe) {
+    printUniverse(universe);
+
+
+    if (_showCoordinates) cout << setw(CELL_WIDTH+1) << " ";
+    // printMessages(universe);
+    cout << "TODO: print messages" << endl;
+
+    if (_showCoordinates) cout << setw(CELL_WIDTH+1) << " ";
+    if (_showQuantities && _showGeneration) {
+        cout << setw(20) << centered("Generation: " + to_string(universe.getGenerations()));
+        cout << VERTICAL_CHAR << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+        cout << VERTICAL_CHAR << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << endl << endl;
+    }
+    else if (_showGeneration) {
+        cout << setw(60) << centered("Generation: " + to_string(universe.getGenerations()));
+        cout << endl << endl;
+    }
+    else if (_showQuantities) {
+        cout << setw(30) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+        cout << VERTICAL_CHAR << setw(30) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << endl << endl;
+    }
+    else {
+        cout << endl;
+    }
+}
+
+void SimulationView::printUniverse(Universe& universe) {
+    const vector<vector<Cell>>& cells = universe.getCells();
+    const int nbCols = cells[0].size();
+    char letter = 'A';
+
+    if(_showCoordinates) printSeparator(nbCols, true);
+    for (int i = 0; i < cells.size(); ++i) {
+        printSeparator(nbCols, false);
+
+        if(_showCoordinates) cout << setw(CELL_WIDTH) << centered(string(1, letter++)) << VERTICAL_CHAR;
+        else cout << VERTICAL_CHAR;
+        for (int y = 0; y < nbCols; ++y) {
+            cout << setw(CELL_WIDTH) << centered(cells[i][y].display()) << VERTICAL_CHAR;
+
+        }
+        cout << endl;
+
+        if (i == cells.size() - 1) {
+            printSeparator(nbCols, false);
+        }
+    }
+}
+
+void SimulationView::printSeparator(int cols, bool header) const {
+    if (header) {
+        cout << setw(CELL_WIDTH+1) << " ";
+        for (int i = 0; i < cols; ++i) {
+            cout << setw(CELL_WIDTH) << centered(to_string(i)) << " ";
+        }
+        cout << endl;
+    } else {
+        if(_showCoordinates) cout <<  setw(CELL_WIDTH+1) << CORNER_CHAR;
+        else cout << CORNER_CHAR;
+        const string side = string(CELL_WIDTH, LINE_CHAR) + string(1, CORNER_CHAR);
+        for (int i = 0; i < cols; ++i) {
+            cout << setw(CELL_WIDTH) << side;
+        }
+        cout << endl;
+    }
 }
 
 vector<int> SimulationView::requestDimensions() const {
@@ -27,14 +94,6 @@ vector<int> SimulationView::requestDimensions() const {
     int y = getValidIntegerInput("How many columns ?");
     cout << '\n';
     return {x, y};
-}
-
-void SimulationView::printSeparator(int cols) const {
-    cout << '+';
-    for (int i = 0; i < cols; ++i) {
-        cout << "----+";
-    }
-    cout << '\n';
 }
 
 int SimulationView::getValidIntegerInput(const string& prompt) const {

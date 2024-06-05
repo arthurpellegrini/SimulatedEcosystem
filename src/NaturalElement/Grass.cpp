@@ -2,5 +2,5 @@
 
 
 string Grass::display() const {
-    return ";";
+    return ",";
 }
