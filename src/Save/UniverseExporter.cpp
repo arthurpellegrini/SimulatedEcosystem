@@ -2,29 +2,27 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <filesystem>
 
-void UniverseExporter::exportToFile(const std::string &filename, Universe &universe) {
-    // Get the current date and time
+string UniverseExporter::exportToFile(const std::string &filename, Universe* universe) {
     std::time_t t = std::time(nullptr);
     char buffer[100];
     std::strftime(buffer, sizeof(buffer), "_%d-%m-%Y_%H-%M-%S", std::localtime(&t));
 
-    // Create the filename
-    std::string dateFilename = filename + std::string(buffer) + ".txt";
+    std::string dateFilename = "save/" + filename + std::string(buffer) + ".txt";
+
+    std::filesystem::create_directories("save");
 
     std::ofstream outFile(dateFilename);
 
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not open file " << filename << " for writing." << std::endl;
-        return;
+        return "";
     }
 
-    const std::vector<std::vector<Cell>> &field = universe.getCells();
+    const std::vector<std::vector<Cell>> &field = universe->getCells();
     int rows = field.size();
     int cols = rows > 0 ? field[0].size() : 0;
-
-    // Affiche dans la console les dimensions de l'univers
-    std::cout << "Dimensions de l'univers: " << rows << " x " << cols << std::endl;
 
     outFile << rows << " " << cols << std::endl;
 
@@ -36,8 +34,6 @@ void UniverseExporter::exportToFile(const std::string &filename, Universe &unive
             int age = -1;
             int satiety = -1;
             string gender = "N";
-
-            std::cout << "Exporting cell at position " << posX << ", " << posY << std::endl;
 
             const Cell &cell = field[i][j];
             if (cell.hasAnimal()) {
@@ -54,4 +50,5 @@ void UniverseExporter::exportToFile(const std::string &filename, Universe &unive
     }
 
     outFile.close();
+    return dateFilename;
 }

@@ -11,14 +11,14 @@
 #include "../Animal/Sheep.h"
 #include "../Animal/Wolf.h"
 
-Universe UniverseImporter::importFromFile(const std::string &filename) {
+Universe* UniverseImporter::importFromFile(const std::string &filename) {
 
     std::cout << "Importing universe from file: " << filename << std::endl;
     std::ifstream inFile(filename);
 
     if (!inFile.is_open()) {
         std::cerr << "Error: Could not open file " << filename << " for reading." << std::endl;
-        return Universe({0, 0});
+        return nullptr;
     }
 
     int rows, cols;
@@ -26,9 +26,12 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
 
     inFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    Universe universe({rows, cols});
+    Universe* universe = new Universe({rows, cols});
 
     std::string line;
+
+    int numSheep = 0;
+    int numWolves = 0;
 
     while (std::getline(inFile, line)) {
         std::istringstream iss(line);
@@ -65,17 +68,15 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
             gender = (genderChar == 'M' ? Gender::Male : Gender::Female);
         }
 
-        //std::cout << "Importing elements " << element1 << " and " << element2 << " at position (" << posX << ", " << posY << ")" << std::endl;
-
-        Cell &cell = universe.getCell({posX, posY});
+        Cell &cell = universe->getCell({posX, posY});
 
         for (char element : elements) {
-            std::cout << "Importing element " << element << std::endl;
             switch (element) {
                 case 'W':
                 {
                     std::unique_ptr<Wolf> wolf = std::make_unique<Wolf>(gender, age, satiety);
                     cell.addAnimal(std::move(wolf));
+                    numWolves++;
                 }
                     break;
 
@@ -83,14 +84,15 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
                 {
                     std::unique_ptr<Sheep> sheep = std::make_unique<Sheep>(gender, age, satiety);
                     cell.addAnimal(std::move(sheep));
+                    numSheep++;
                 }
                     break;
 
-                case 'G':
+                case ',':
                     cell.addNaturalElement(std::make_unique<Grass>());
                     break;
 
-                case 'M':
+                case '*':
                     cell.addNaturalElement(std::make_unique<SaltMinerals>());
                     break;
 
@@ -103,6 +105,9 @@ Universe UniverseImporter::importFromFile(const std::string &filename) {
             }
         }
     }
+
+    universe->setSheepQuantity(numSheep);
+    universe->setWolfQuantity(numWolves);
 
     inFile.close();
 
