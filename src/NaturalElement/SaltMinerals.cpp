@@ -6,7 +6,7 @@ const int SaltMinerals::_lifespan = 1;
 SaltMinerals::SaltMinerals() : _age(0) {}
 
 string SaltMinerals::display() const {
-    return "M";
+    return "*";
 }
 
 void SaltMinerals::incrementAge() {

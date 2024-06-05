@@ -10,21 +10,30 @@ using namespace std;
 class Universe {
 public:
     Universe(const vector<int>& size);
+    Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity);
 
     void nextGeneration();
-    vector<vector<Cell>>& getCells();
-    Cell& getCell(const std::pair<int, int>& coordinates);
     bool isDead();
     int getGenerations();
 
+    vector<vector<Cell>>& getCells();
+    Cell& getCell(const std::pair<int, int>& coordinates);
+    int getSheepQuantity();
+    int getWolfQuantity();
+
+
 private:
     vector<int> _size;
+
+    int _sheepQuantity;
+    int _wolfQuantity;
+
     int _generations;
-    bool _isDead;
 
     vector<vector<Cell>> _cells;
     vector<vector<Cell>> _nextCells;
 
+    void generateRandomUniverse();
     static Gender randomGender();
     void placeRandomAnimal(unique_ptr<Animal> animal);
     void placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element);
@@ -41,10 +50,6 @@ private:
 
     Cell& getNextRandomSheepPosition(int x, int y);
     Cell& getNextRandomWolfPosition(int x, int y);
-
-    static const float _percentageAnimal;
-    static const float _percentageWolves;
-    static const float _percentageSaltMinerals;
 };
 
 #endif // UNIVERSE_H

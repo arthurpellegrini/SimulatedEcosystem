@@ -8,44 +8,62 @@
 #include "../NaturalElement/Grass.h"
 #include "../NaturalElement/SaltMinerals.h"
 
-const float Universe::_percentageAnimal = 0.10;
-const float Universe::_percentageWolves = 0.20;
-const float Universe::_percentageSaltMinerals = 0.10;
 
+Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
+}
 
-Universe::Universe(const vector<int>& size) : _size(size), _generations(0), _isDead(false) {
-    _cells.resize(size[0], vector<Cell>(size[1]));
-    _nextCells.resize(size[0], vector<Cell>(size[1]));
+Universe::Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity) : _size(size), _generations(0), _sheepQuantity(sheepQuantity), _wolfQuantity(wolfQuantity) {
+    _cells.resize(_size[0], vector<Cell>(_size[1]));
+    _nextCells.resize(_size[0], vector<Cell>(_size[1]));
 
+    generateRandomUniverse();
+}
+
+void Universe::generateRandomUniverse() {
     srand(static_cast<unsigned>(time(nullptr)));
 
-    const int totalCells = size[0] * size[1];
-    const int totalAnimals = floor(totalCells * _percentageAnimal);
-    const int totalWolves = floor(totalAnimals * _percentageWolves);
-    const int totalSheep = totalAnimals - totalWolves;
+    const int totalCells = _size[0] * _size[1];
+    const int totalAnimals = _sheepQuantity + _wolfQuantity;
 
-    const int totalSaltMinerals = floor(totalCells * _percentageSaltMinerals);
-    const int totalGrass = totalCells - totalSaltMinerals;
+    // Formaliser une erreur si le nombre d'animaux est supérieur au nombre de cellules
+    if (totalAnimals > totalCells) {
+        throw invalid_argument("The number of animals is greater than the number of cells");
+        exit(0);
+    }
+    //
+    //
+    // const int totalAnimals = floor(totalCells * _percentageAnimal);
+    // const int totalWolves = floor(totalAnimals * _percentageWolves);
+    // const int totalSheep = totalAnimals - totalWolves;
+    //
+    // const int totalSaltMinerals = floor(totalCells * _percentageSaltMinerals);
+    // const int totalGrass = totalCells - totalSaltMinerals;
 
-    for (int i = 0; i < totalWolves; ++i) {
+    for (int x = 0; x < _size[0]; ++x) {
+        for (int y = 0; y < _size[1]; ++y) {
+            _cells[x][y].addNaturalElement(make_unique<Grass>());
+        }
+    }
+
+    for (int i = 0; i < _wolfQuantity; ++i) {
         auto wolf = make_unique<Wolf>(randomGender());
         placeRandomAnimal(move(wolf));
     }
 
-    for (int i = 0; i < totalSheep; ++i) {
+    for (int i = 0; i < _sheepQuantity; ++i) {
         auto sheep = make_unique<Sheep>(randomGender());
         placeRandomAnimal(move(sheep));
     }
 
-    for (int i = 0; i < totalSaltMinerals; ++i) {
-        auto salt_minerals = make_unique<SaltMinerals>();
-        placeRandomNaturalElement(move(salt_minerals));
-    }
-
-    for (int i = 0; i < totalGrass; ++i) {
-        auto grass = make_unique<Grass>();
-        placeRandomNaturalElement(move(grass));
-    }
+    // for (int i = 0; i < totalSaltMinerals; ++i) {
+    //     auto salt_minerals = make_unique<SaltMinerals>();
+    //     placeRandomNaturalElement(move(salt_minerals));
+    // }
+    //
+    // for (int i = 0; i < totalGrass; ++i) {
+    //     auto grass = make_unique<Grass>();
+    //     placeRandomNaturalElement(move(grass));
+    // }
 }
 
 Gender Universe::randomGender() {
@@ -144,6 +162,7 @@ void Universe::processSheep(int x, int y) {
     if(sheep.isDead()) { // Mort Naturelle
         _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
+        _sheepQuantity--;
     } else {
         sheep.decreaseSatiety();
 
@@ -167,6 +186,7 @@ void Universe::processWolf(int x, int y) {
     if(wolf.isDead()) { // Mort Naturelle
         _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
+        _wolfQuantity--;
     } else {
         wolf.decreaseSatiety();
 
@@ -176,6 +196,7 @@ void Universe::processWolf(int x, int y) {
             if(dynamic_cast<Sheep*>(nextCell.getAnimal())) {
                 wolf.eat();
                 nextCell.removeAnimal();
+                _sheepQuantity--;
             }
         }
         nextCell.addAnimal(make_unique<Wolf>(wolf));
@@ -237,6 +258,15 @@ Cell& Universe::getCell(const pair<int, int>& coordinates) {
     return _cells[coordinates.first][coordinates.second];
 }
 
+int Universe::getSheepQuantity() {
+    return _sheepQuantity;
+}
+
+int Universe::getWolfQuantity() {
+    return _wolfQuantity;
+}
+
 bool Universe::isDead() {
-    return _isDead;
+    cout << "Sheep: " << _sheepQuantity << " Wolf: " << _wolfQuantity << endl;
+    return _wolfQuantity == 0 && _sheepQuantity == 0;
 }
