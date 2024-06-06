@@ -85,7 +85,7 @@ void Simulation::load() {
         if (newUniverse) {
             delete _universe;
             _universe = newUniverse;
-            _simulationView->displayCells(*_universe);
+            _simulationView->display(*_universe);
             std::cout << "Universe loaded from " << fileName << std::endl;
         } else {
             std::cout << "Error: Could not load universe from " << fileName << std::endl;
