@@ -14,7 +14,10 @@ public:
 
     void display(Universe& universe) const;
     void printUniverse(Universe& universe) const;
-    vector<int> requestDimensions() const;
+
+    static vector<int> requestDimensions();
+    static int requestSheepQuantity();
+    static int requestWolfQuantity();
 
     static char displayPauseMenu();
     static void displayEndSimulation(const Universe& universe);

@@ -1,7 +1,6 @@
 #include "SimulationView.h"
 #include "Center.h"
 
-
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
@@ -37,13 +36,29 @@ void SimulationView::printUniverse(Universe &universe) const {
     const vector<vector<Cell> > &cells = universe.getCells();
     const int nbCols = cells[0].size();
     char letter = 'A';
+    int letterCount = 0;
 
     if (_showCoordinates) printSeparator(nbCols, true);
     for (int i = 0; i < cells.size(); ++i) {
         printSeparator(nbCols, false);
 
-        if (_showCoordinates) cout << setw(_cellWidth) << centered(string(1, letter++)) << _verticalChar;
-        else cout << _verticalChar;
+        if (_showCoordinates) {
+            string rowLabel = "";
+            if (letterCount > 0) {
+                rowLabel += to_string(letterCount);
+            }
+            rowLabel += string(1, letter);
+
+            cout << setw(_cellWidth) << centered(rowLabel) << _verticalChar;
+            if (letter == 'Z') {
+                letter = 'A';
+                letterCount++;
+            } else {
+                letter++;
+            }
+        } else {
+            cout << _verticalChar;
+        }
         for (int y = 0; y < nbCols; ++y) {
             cout << setw(_cellWidth) << centered(cells[i][y].display()) << _verticalChar;
         }
@@ -102,11 +117,19 @@ void SimulationView::printInformations(const Universe &universe) const {
     }
 }
 
-vector<int> SimulationView::requestDimensions() const {
+vector<int> SimulationView::requestDimensions() {
     int x = getValidIntegerInput("How many rows ?");
     int y = getValidIntegerInput("How many columns ?");
     cout << '\n';
     return {x, y};
+}
+
+int SimulationView::requestSheepQuantity() {
+    return getValidIntegerInput("How many sheeps ?");
+}
+
+int SimulationView::requestWolfQuantity() {
+    return getValidIntegerInput("How many wolves ?");
 }
 
 int SimulationView::getValidIntegerInput(const string &prompt) {
@@ -129,7 +152,7 @@ int SimulationView::getValidIntegerInput(const string &prompt) {
 char SimulationView::displayPauseMenu() {
     char choice;
     cout << "Simulation en pause:" << endl;
-    cout << "Options: r => resume, e => exit, s => save, l => load" << endl;
+    cout << "Options: [r]esume, [e]xit, [s]ave, [l]oad" << endl;
 
     while (true) {
         choice = cin.get();

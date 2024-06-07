@@ -12,7 +12,7 @@ using namespace std;
 
 class Cell {
 public:
-    explicit Cell(const vector<int>& position = {0, 0});
+    explicit Cell();
 
     void addAnimal(unique_ptr<Animal> animal);
     void removeAnimal();
@@ -28,7 +28,6 @@ public:
     bool hasGrass() const;
     bool hasSaltMinerals() const;
 
-    vector<int> getPosition() const;
     Animal* getAnimal() const;
     NaturalElement* getNaturalElement() const;
 
@@ -37,7 +36,6 @@ public:
 
 private:
     bool _isEmpty;
-    vector<int> _position;
     shared_ptr<Animal> _animal;
     shared_ptr<NaturalElement> _natural_element;
 

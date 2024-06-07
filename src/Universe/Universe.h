@@ -13,6 +13,9 @@ using namespace std;
 class Universe {
 public:
     explicit Universe(const vector<int>& size);
+
+    Universe(const vector<int> &size, int sheepQuantity, int wolfQuantity, int generation, bool isRandomGeneration);
+
     Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity);
 
     void nextGeneration();
@@ -35,18 +38,18 @@ private:
     int _sheepQuantity;
     int _wolfQuantity;
     int _generations;
+    bool _isRandomGeneration;
 
     vector<vector<Cell>> _cells;
     vector<pair<int, map<string, vector<pair<int, int>>>>> _messages;
 
     void generateRandomUniverse();
-
     vector<int> randomAnimalPosition() const;
-
-    map<pair<int, int>, Cell *> neighboor(int x, int y);
 
     void processNaturalElements();
     void processSaltMinerals(int x, int y);
+
+    map<pair<int, int>, Cell *> neighboor(int x, int y);
 
     void processAnimals();
     void processWolf(int x, int y);

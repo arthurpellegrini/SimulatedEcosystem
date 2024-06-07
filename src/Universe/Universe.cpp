@@ -16,14 +16,19 @@ Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
 }
 
 Universe::Universe(const vector<int>& size, const int sheepQuantity, const int wolfQuantity) :
+    Universe(size, sheepQuantity, wolfQuantity, 0, false) {
+}
+
+Universe::Universe(const vector<int>& size, const int sheepQuantity, const int wolfQuantity, const int generation, const bool isRandomGeneration) :
     _size(size),
     _sheepQuantity(sheepQuantity),
     _wolfQuantity(wolfQuantity),
-    _generations(0)
+    _generations(generation),
+    _isRandomGeneration(isRandomGeneration)
 {
     _cells.resize(_size[0], vector<Cell>(_size[1]));
 
-    generateRandomUniverse();
+    if(_isRandomGeneration) generateRandomUniverse();
 }
 
 void Universe::generateRandomUniverse()
@@ -63,27 +68,6 @@ vector<int> Universe::randomAnimalPosition() const {
     return {x, y};
 }
 
-map<pair<int, int>, Cell *> Universe::neighboor(const int x, const int y) {
-    map<pair<int, int>, Cell*> neighbors;
-
-    const vector<pair<int, int>> moves = {
-        {-1, -1}, {-1, 0}, {-1, 1},
-        {0, -1},           {0, 1},
-        {1, -1}, {1, 0}, {1, 1}
-    };
-
-    for (const auto& move : moves) {
-        int nx = x + move.first;
-        int ny = y + move.second;
-
-        if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
-            neighbors[{nx, ny}] = &_cells[nx][ny];
-        }
-    }
-
-    return neighbors;
-}
-
 void Universe::nextGeneration() {
     _generations++;
 
@@ -109,8 +93,29 @@ void Universe::processSaltMinerals(const int x, const int y) {
     if (saltMinerals.shouldTransform()) {
         _cells[x][y].removeNaturalElement();
         _cells[x][y].addNaturalElement(make_unique<Grass>());
-        addMessage({x, y}, "Grass grew again");
+        addMessage({x, y}, "Grass grows again");
     }
+}
+
+map<pair<int, int>, Cell *> Universe::neighboor(const int x, const int y) {
+    map<pair<int, int>, Cell*> neighbors;
+
+    const vector<pair<int, int>> moves = {
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1},           {0, 1},
+        {1, -1}, {1, 0}, {1, 1}
+    };
+
+    for (const auto& move : moves) {
+        int nx = x + move.first;
+        int ny = y + move.second;
+
+        if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
+            neighbors[{nx, ny}] = &_cells[nx][ny];
+        }
+    }
+
+    return neighbors;
 }
 
 void Universe::processAnimals() {
@@ -204,7 +209,7 @@ void Universe::processSheep(const int x, const int y) {
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
             sheep.eat();
-            addMessage({position[0], position[1]}, "A sheep ate grass");
+            addMessage({position[0], position[1]}, "A sheep eats grass");
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Sheep>(sheep));
@@ -348,8 +353,14 @@ void Universe::breedSheep(const int x, const int y, Sheep& sheep) {
 }
 
 string Universe::positionToString(const int x, const int y) {
-    const char letter = 'A' + x;
-    return string(1, letter) + to_string(y+1);
+    const char letter = 'A' + (x % 26);
+    const int letterCount = x / 26;
+    string position = "";
+    if (letterCount > 0) {
+        position += to_string(letterCount);
+    }
+    position += string(1, letter) + to_string(y+1);
+    return position;
 }
 
 void Universe::addMessage(const pair<int, int>& coordinates, const string &message) {
