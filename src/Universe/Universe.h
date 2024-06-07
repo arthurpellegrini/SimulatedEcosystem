@@ -61,6 +61,8 @@ private:
     static string positionToString(int x, int y);
 
     void addMessage(const pair<int, int>& coordinates, const string &message);
+
+    vector<pair<int, int>> findGrassWithinFov(int x, int y, int fov) const;
 };
 
 #endif // UNIVERSE_H
