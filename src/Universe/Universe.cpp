@@ -77,28 +77,27 @@ void Universe::nextGeneration() {
         }
     }
 
-    for (int i = 0; i < _size[0]; ++i) {
-        for (int j = 0; j < _size[1]; ++j) {
-            processAnimal(i, j);
-        }
-    }
+    processAnimals();
 
     _cells = move(_nextCells);
     _nextCells.resize(_size[0], vector<Cell>(_size[1]));
+
+    // for (int i = 0; i < _size[0]; ++i) {
+    //     for (int j = 0; j < _size[1]; ++j) {
+    //         processAnimalBreed(i, j);
+    //     }
+    // }
+
     _generations++;
 }
 
 void Universe::processNaturalElement(int x, int y) {
     Cell& cell = _cells[x][y];
 
-    if (cell.hasNaturalElement()) {
-        NaturalElement* naturalElement = cell.getNaturalElement();
-
-        if (dynamic_cast<Grass*>(naturalElement)) {
-            processGrass(x, y);
-        } else if (dynamic_cast<SaltMinerals*>(naturalElement)) {
-            processSaltMinerals(x, y);
-        }
+    if (cell.hasGrass()) {
+        processGrass(x, y);
+    } else if (cell.hasSaltMinerals()) {
+        processSaltMinerals(x, y);
     }
 }
 
@@ -122,15 +121,105 @@ void Universe::processSaltMinerals(int x, int y) {
     _cells[x][y].removeNaturalElement();
 }
 
-void Universe::processAnimal(int x, int y) {
-    Cell& cell = _cells[x][y];
 
-    if (cell.hasAnimal()) {
-        Animal* animal = cell.getAnimal();
-        if (dynamic_cast<Sheep*>(animal)) {
-            processSheep(x, y);
-        } else if (dynamic_cast<Wolf*>(animal)) {
-            processWolf(x, y);
+// void Universe::processAnimalBreed(int x, int y) {
+//     Cell& cell = _cells[x][y];
+//
+//     if (cell.hasAnimal()) {
+//         Animal* animal = cell.getAnimal();
+//         if (dynamic_cast<Sheep*>(animal)) {
+//             processSheepBreed(x, y);
+//         }
+//         else if (dynamic_cast<Wolf*>(animal)) {
+//             processWolfBreed(x, y);
+//         }
+//     }
+// }
+//
+// bool Universe::placeRandomBabyAnimal(int x, int y, unique_ptr<Animal> animal) {
+//     vector <pair<int, int>> possibleBirth = {
+//         {x-1, y-1}, {x-1, y}, {x-1, y+1},
+//         {x, y-1}, {x, y+1},
+//         {x+1, y-1}, {x+1, y}, {x+1, y+1}
+//     };
+//
+//     random_shuffle(possibleBirth.begin(), possibleBirth.end());
+//
+//     for(auto birthPosition : possibleBirth) {
+//         // If in the grid
+//         if(birthPosition.first >= 0 && birthPosition.first < _size[0] && birthPosition.second >= 0 && birthPosition.second < _size[1]) {
+//             // If there is no animals
+//             if(!_cells[birthPosition.first][birthPosition.second].hasAnimal()) {
+//                 cout << "GEN" << _generations << ": Baby born at " << birthPosition.first << " " << birthPosition.second << endl;
+//                 _cells[birthPosition.first][birthPosition.second].addAnimal(move(animal));
+//                 return true;
+//             }
+//         }
+//     }
+//     cout << "GEN" << _generations << ": No place to give birth" << endl;
+//     return false;
+// }
+//
+// void Universe::processSheepBreed(int x, int y) {
+//     Sheep sheep = *dynamic_cast<Sheep*>(_cells[x][y].getAnimal());
+//
+//     // Check neighboors that are sheeps to see if they can breed
+//     vector<pair<int, int>> possibleMoves = {
+//         {x-1, y-1}, {x-1, y}, {x-1, y+1},
+//         {x, y-1}, {x, y+1},
+//         {x+1, y-1}, {x+1, y}, {x+1, y+1}
+//     };
+//
+//     for (auto move : possibleMoves) {
+//         if (move.first >= 0 && move.first < _size[0] && move.second >= 0 && move.second < _size[1]) {
+//             if (_cells[move.first][move.second].hasAnimal()) {
+//                 Animal *neighboorAnimal = _cells[move.first][move.second].getAnimal();
+//                 if (dynamic_cast<Sheep*>(neighboorAnimal)) {
+//                     Sheep neighboorSheep = *dynamic_cast<Sheep*>(neighboorAnimal);
+//                     if (sheep.canBreed(neighboorSheep)) {
+//                         // if (rand() % 2 == 0) {
+//                         bool hasBeenplaced = placeRandomBabyAnimal(x, y, make_unique<Sheep>(randomGender()));
+//                         if (hasBeenplaced) {
+//                             sheep.breed();
+//                             neighboorSheep.breed();
+//                             _sheepQuantity++;
+//                         }
+//                         // }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+//
+//
+// void Universe::processWolfBreed(int x, int y) {
+//     Wolf wolf = *dynamic_cast<Wolf*>(_cells[x][y].getAnimal());
+//
+// }
+
+void Universe::processAnimals() {
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            Cell& cell = _cells[i][j];
+            if (cell.hasAnimal()) {
+                Animal* animal = cell.getAnimal();
+                if (dynamic_cast<Wolf*>(animal)) {
+                    processWolf(i, j);
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            Cell& cell = _cells[i][j];
+            if (cell.hasAnimal()) {
+                Animal* animal = cell.getAnimal();
+                if (dynamic_cast<Sheep*>(animal)) {
+                    processSheep(i, j);
+                }
+            }
         }
     }
 }
@@ -177,6 +266,7 @@ void Universe::processWolf(int x, int y) {
                 wolf.eat();
                 nextCell.removeAnimal();
                 _sheepQuantity--;
+                cout << "Wolf ate a sheep" << endl;
             }
         }
         nextCell.addAnimal(make_unique<Wolf>(wolf));
