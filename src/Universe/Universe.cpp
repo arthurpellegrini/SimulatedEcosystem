@@ -62,10 +62,10 @@ vector<int> Universe::randomAnimalPosition() const {
 }
 
 void Universe::nextGeneration() {
+    _generations++;
+
     processNaturalElements();
     processAnimals();
-
-    _generations++;
 }
 
 void Universe::processNaturalElements() {
@@ -187,30 +187,30 @@ void Universe::processAnimals() {
     }
 }
 
-void Universe::processWolf(int x, int y) {
+void Universe::processWolf(const int x, const int y) {
     Wolf wolf = *dynamic_cast<Wolf*>(_cells[x][y].getAnimal());
     wolf.move();
     wolf.increaseAge();
-    string pos = positionToString(x, y);
+    const string pos = positionToString(x, y);
 
     if(wolf.isDead()) { // Mort Naturelle
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _wolfQuantity--;
-        // cout << "GEN" << _generations << ": Wolf died at " << pos << endl;
+        addMessage("Wolf died at " + pos);
     } else {
         wolf.decreaseSatiety();
 
-        vector<int> position = randomWolfPosition(x, y);
+        const vector<int> position = randomWolfPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        string nextPos = positionToString(position[0], position[1]);
-        // cout << "GEN" << _generations << ": Wolf moved from " << pos << " to " << nextPos << endl;
+        const string nextPos = positionToString(position[0], position[1]);
+        addMessage("Wolf moved from " + pos + " to " + nextPos);
 
         if(nextCell.hasSheep()) {
             nextCell.removeAnimal();
             _sheepQuantity--;
             wolf.eat();
-            cout << "GEN" << _generations << ": Wolf ate sheep at " << nextPos << endl;
+            addMessage("Wolf ate sheep at " + nextPos);
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Wolf>(wolf));
@@ -221,26 +221,26 @@ void Universe::processSheep(const int x, const int y) {
     Sheep sheep = *dynamic_cast<Sheep*>(_cells[x][y].getAnimal());
     sheep.move();
     sheep.increaseAge();
-    string pos = positionToString(x, y);
+    const string pos = positionToString(x, y);
 
     if(sheep.isDead()) { // Mort Naturelle
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _sheepQuantity--;
-        // cout << "GEN" << _generations << ": Sheep died at " << pos << endl;
+        addMessage("Sheep died at " + pos);
     } else {
         sheep.decreaseSatiety();
 
-        vector<int> position = randomSheepPosition(x, y);
+        const vector<int> position = randomSheepPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        string nextPos = positionToString(position[0], position[1]);
+        const string nextPos = positionToString(position[0], position[1]);
 
-        // cout << "GEN" << _generations << ": Sheep moved from " << pos << " to " << nextPos << endl;
+        addMessage("Sheep moved from " + pos + " to " + nextPos);
 
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
             sheep.eat();
-            // cout << "GEN" << _generations << ": Sheep ate grass at " << nextPos << endl;
+            addMessage("Sheep ate grass at " + nextPos);
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Sheep>(sheep));
@@ -254,7 +254,6 @@ vector<int> Universe::randomWolfPosition(int x, int y) {
         {x+1, y-1}, {x+1, y}, {x+1, y+1}
     };
 
-    // random_shuffle(possibleMoves.begin(), possibleMoves.end());
     shuffle(possibleMoves.begin(), possibleMoves.end(), default_random_engine(rand()));
 
     for(auto displacement : possibleMoves) {
@@ -432,13 +431,27 @@ vector<int> Universe::randomSheepPosition(int x, int y) {
 // }
 
 string Universe::positionToString(const int x, const int y) {
-    char coordX = 'A';
-    coordX += x;
-    return string(1, coordX) + to_string(y);
+    char letter = 'A' + x;
+    return string(1, letter) + to_string(y);
 }
 
+void Universe::addMessage(const string& message) {
+    if (_messages.empty() || _messages.back().first != _generations) {
+        _messages.push_back({_generations, {}});
+    }
+    _messages.back().second.push_back(message);
+}
 
-int Universe::getGenerations() {
+vector<string> Universe::getMessages(const int generation) {
+    for (const auto& pair : _messages) {
+        if (pair.first == generation) {
+            return pair.second;
+        }
+    }
+    return {};
+}
+
+int Universe::getGenerations() const {
     return _generations;
 }
 
@@ -450,22 +463,22 @@ Cell& Universe::getCell(const pair<int, int>& coordinates) {
     return _cells[coordinates.first][coordinates.second];
 }
 
-int Universe::getSheepQuantity() {
+int Universe::getSheepQuantity() const {
     return _sheepQuantity;
 }
 
-int Universe::getWolfQuantity() {
+int Universe::getWolfQuantity() const {
     return _wolfQuantity;
 }
 
-bool Universe::isDead() {
+bool Universe::isDead() const {
     return _wolfQuantity == 0 && _sheepQuantity == 0;
 }
 
-void Universe::setSheepQuantity(int sheepQuantity) {
+void Universe::setSheepQuantity(const int sheepQuantity) {
     _sheepQuantity = sheepQuantity;
 }
 
-void Universe::setWolfQuantity(int wolfQuantity) {
+void Universe::setWolfQuantity(const int wolfQuantity) {
     _wolfQuantity = wolfQuantity;
 }

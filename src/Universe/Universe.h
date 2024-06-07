@@ -13,13 +13,14 @@ public:
     Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity);
 
     void nextGeneration();
-    bool isDead();
-    int getGenerations();
+    bool isDead() const;
+    int getGenerations() const;
 
     vector<vector<Cell>>& getCells();
     Cell& getCell(const std::pair<int, int>& coordinates);
-    int getSheepQuantity();
-    int getWolfQuantity();
+    vector<string> getMessages(int generation);
+    int getSheepQuantity() const;
+    int getWolfQuantity() const;
 
     void setSheepQuantity(int sheepQuantity);
     void setWolfQuantity(int wolfQuantity);
@@ -33,7 +34,7 @@ private:
     int _generations;
 
     vector<vector<Cell>> _cells;
-    // vector<vector<Cell>> _nextCells;
+    vector<pair<int, vector<string>>> _messages;
 
     void generateRandomUniverse();
 
@@ -55,6 +56,7 @@ private:
     vector<int> randomSheepPosition(int x, int y);
 
     string positionToString(int x, int y);
+    void addMessage(const string &message);
 };
 
 #endif // UNIVERSE_H
