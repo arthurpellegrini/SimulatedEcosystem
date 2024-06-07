@@ -113,83 +113,6 @@ void Universe::processSaltMinerals(const int x, const int y) {
     }
 }
 
-
-// void Universe::processAnimalBreed(int x, int y) {
-//     Cell& cell = _cells[x][y];
-//
-//     if (cell.hasAnimal()) {
-//         Animal* animal = cell.getAnimal();
-//         if (dynamic_cast<Sheep*>(animal)) {
-//             processSheepBreed(x, y);
-//         }
-//         else if (dynamic_cast<Wolf*>(animal)) {
-//             processWolfBreed(x, y);
-//         }
-//     }
-// }
-//
-// bool Universe::placeRandomBabyAnimal(int x, int y, unique_ptr<Animal> animal) {
-//     vector <pair<int, int>> possibleBirth = {
-//         {x-1, y-1}, {x-1, y}, {x-1, y+1},
-//         {x, y-1}, {x, y+1},
-//         {x+1, y-1}, {x+1, y}, {x+1, y+1}
-//     };
-//
-//     random_shuffle(possibleBirth.begin(), possibleBirth.end());
-//
-//     for(auto birthPosition : possibleBirth) {
-//         // If in the grid
-//         if(birthPosition.first >= 0 && birthPosition.first < _size[0] && birthPosition.second >= 0 && birthPosition.second < _size[1]) {
-//             // If there is no animals
-//             if(!_cells[birthPosition.first][birthPosition.second].hasAnimal()) {
-//                 cout << "GEN" << _generations << ": Baby born at " << birthPosition.first << " " << birthPosition.second << endl;
-//                 _cells[birthPosition.first][birthPosition.second].addAnimal(move(animal));
-//                 return true;
-//             }
-//         }
-//     }
-//     cout << "GEN" << _generations << ": No place to give birth" << endl;
-//     return false;
-// }
-//
-// void Universe::processSheepBreed(int x, int y) {
-//     Sheep sheep = *dynamic_cast<Sheep*>(_cells[x][y].getAnimal());
-//
-//     // Check neighboors that are sheeps to see if they can breed
-//     vector<pair<int, int>> possibleMoves = {
-//         {x-1, y-1}, {x-1, y}, {x-1, y+1},
-//         {x, y-1}, {x, y+1},
-//         {x+1, y-1}, {x+1, y}, {x+1, y+1}
-//     };
-//
-//     for (auto move : possibleMoves) {
-//         if (move.first >= 0 && move.first < _size[0] && move.second >= 0 && move.second < _size[1]) {
-//             if (_cells[move.first][move.second].hasAnimal()) {
-//                 Animal *neighboorAnimal = _cells[move.first][move.second].getAnimal();
-//                 if (dynamic_cast<Sheep*>(neighboorAnimal)) {
-//                     Sheep neighboorSheep = *dynamic_cast<Sheep*>(neighboorAnimal);
-//                     if (sheep.canBreed(neighboorSheep)) {
-//                         // if (rand() % 2 == 0) {
-//                         bool hasBeenplaced = placeRandomBabyAnimal(x, y, make_unique<Sheep>(randomGender()));
-//                         if (hasBeenplaced) {
-//                             sheep.breed();
-//                             neighboorSheep.breed();
-//                             _sheepQuantity++;
-//                         }
-//                         // }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
-//
-//
-// void Universe::processWolfBreed(int x, int y) {
-//     Wolf wolf = *dynamic_cast<Wolf*>(_cells[x][y].getAnimal());
-//
-// }
-
 void Universe::processAnimals() {
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
@@ -229,10 +152,13 @@ void Universe::processWolf(const int x, const int y) {
     } else {
         wolf.decreaseSatiety();
 
+        if (wolf.getGender() == Gender::Female && wolf.canBreed()) {
+            breedWolf(x, y, wolf);
+        }
+
         const vector<int> position = randomWolfPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        // TODO: Remove this debug message
-        // cout << positionToString(position[0], position[1]) << "A wolf came from " + positionToString(x, y));
+
         if (position[0] != x || position[1] != y)
             addMessage({position[0], position[1]}, "A wolf moves");
 
@@ -251,7 +177,6 @@ void Universe::processSheep(const int x, const int y) {
     Sheep sheep = *dynamic_cast<Sheep*>(_cells[x][y].getAnimal());
     sheep.move();
     sheep.increaseAge();
-    const string pos = positionToString(x, y);
 
     if(sheep.isOldAgeDead()) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
@@ -266,10 +191,13 @@ void Universe::processSheep(const int x, const int y) {
     } else {
         sheep.decreaseSatiety();
 
+        if (sheep.getGender() == Gender::Female && sheep.canBreed()) {
+            breedSheep(x, y, sheep);
+        }
+
         const vector<int> position = randomSheepPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        // TODO: Remove this debug message
-        // cout << positionToString(position[0], position[1]) << "A sheep came from " + positionToString(x, y));
+
         if (position[0] != x || position[1] != y)
             addMessage({position[0], position[1]}, "A sheep moves");
 
@@ -306,7 +234,7 @@ vector<int> Universe::randomWolfPosition(int x, int y) {
     for(auto displacement : positions) {
         if(displacement.first >= 0 && displacement.first < _size[0] && displacement.second >= 0 && displacement.second < _size[1]) {
             Cell& cell = _cells[displacement.first][displacement.second];
-            if(!cell.hasWolf()) {
+            if(!cell.hasAnimal()) {
                 return {displacement.first, displacement.second};
             }
         }
@@ -347,147 +275,81 @@ vector<int> Universe::randomSheepPosition(int x, int y) {
     return {x, y};
 }
 
+void Universe::breedWolf(const int x, const int y, Wolf& wolf) {
+    map<pair<int, int>, Cell*> neighbors = neighboor(x, y);
 
+    bool hasBred = false;
 
-// Cell& Universe::getNextPreciseWolfPosition(int x, int y) {
-//     int fov = 2;  // Champ de vision du loup
-//
-//     vector<pair<int, int>> sheepPositions;
-//
-//     // Rechercher les moutons dans le champ de vision
-//     for (int i = -fov; i <= fov; ++i) {
-//         for (int j = -fov; j <= fov; ++j) {
-//             int nx = x + i;
-//             int ny = y + j;
-//
-//             if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
-//                 if (_cells[nx][ny].hasAnimal() && dynamic_cast<Sheep*>(_cells[nx][ny].getAnimal())) {
-//                     std::cout << "Sheep found at (" << nx << ", " << ny << ")" << std::endl;
-//                     sheepPositions.emplace_back(nx, ny);
-//                 }
-//             }
-//         }
-//     }
-//
-//     // Vérifier s'il y a un mouton adjacent
-//     for (const auto& position : sheepPositions) {
-//         int sheepX = position.first;
-//         int sheepY = position.second;
-//
-//         if (abs(sheepX - x) <= 1 && abs(sheepY - y) <= 1) {
-//             return _nextCells[sheepX][sheepY];
-//         }
-//     }
-//
-//     // Si aucun mouton adjacent, se déplacer vers le mouton le plus proche
-//     if (!sheepPositions.empty()) {
-//         // Sélection du mouton le plus proche
-//         int targetX = sheepPositions[0].first;
-//         int targetY = sheepPositions[0].second;
-//         int minDistance = abs(targetX - x) + abs(targetY - y);
-//
-//         for (const auto& position : sheepPositions) {
-//             int distance = abs(position.first - x) + abs(position.second - y);
-//             if (distance < minDistance) {
-//                 targetX = position.first;
-//                 targetY = position.second;
-//                 minDistance = distance;
-//             }
-//         }
-//
-//         // Calcul du déplacement d'une case vers le mouton le plus proche
-//         int moveX = x + (targetX > x ? 1 : (targetX < x ? -1 : 0));
-//         int moveY = y + (targetY > y ? 1 : (targetY < y ? -1 : 0));
-//
-//         // Vérifier si la cellule cible est libre ou contient un mouton
-//         if (!_nextCells[moveX][moveY].hasAnimal() || dynamic_cast<Sheep*>(_nextCells[moveX][moveY].getAnimal())) {
-//             return _nextCells[moveX][moveY];
-//         } else {
-//             // Trouver une cellule adjacente libre ou contenant un mouton
-//             vector<pair<int, int>> possibleMoves = {
-//                     {moveX - 1, moveY - 1}, {moveX - 1, moveY}, {moveX - 1, moveY + 1},
-//                     {moveX, moveY - 1},                     {moveX, moveY + 1},
-//                     {moveX + 1, moveY - 1}, {moveX + 1, moveY}, {moveX + 1, moveY + 1}
-//             };
-//
-//             for (const auto& move : possibleMoves) {
-//                 int adjX = move.first;
-//                 int adjY = move.second;
-//                 if (adjX >= 0 && adjX < _size[0] && adjY >= 0 && adjY < _size[1]) {
-//                     if (!_nextCells[adjX][adjY].hasAnimal() || dynamic_cast<Sheep*>(_nextCells[adjX][adjY].getAnimal())) {
-//                         return _nextCells[adjX][adjY];
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     // Si aucun mouton n'est trouvé ou que toutes les cellules adjacentes sont occupées, déplacement aléatoire
-//     return getNextRandomWolfPosition(x, y);
-// }
-//
-// Cell& Universe::getNextPreciseSheepPosition(int x, int y) {
-//     int fov = dynamic_cast<Sheep*>(_cells[x][y].getAnimal())->getFov();
-//
-//     vector<pair<int, int>> grassPositions;
-//
-//     for (int i = -fov; i <= fov; ++i) {
-//         for (int j = -fov; j <= fov; ++j) {
-//             int nx = x + i;
-//             int ny = y + j;
-//
-//             if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
-//                 if (_cells[nx][ny].hasNaturalElement() && dynamic_cast<Grass*>(_cells[nx][ny].getNaturalElement())) {
-//                     std::cout << "Grass found at (" << nx << ", " << ny << ")" << std::endl;
-//                     grassPositions.emplace_back(nx, ny);
-//                 }
-//             }
-//         }
-//     }
-//
-//     for (const auto& position : grassPositions) {
-//         std::cout << "(" << position.first << ", " << position.second << ")" << std::endl;
-//     }
-//
-//     if (!grassPositions.empty()) {
-//         // Sélection de la première herbe trouvée
-//         int targetX = grassPositions[0].first;
-//         int targetY = grassPositions[0].second;
-//
-//         // Calcul du déplacement d'une case vers l'herbe la plus proche
-//         int moveX = x + (targetX > x ? 1 : (targetX < x ? -1 : 0));
-//         int moveY = y + (targetY > y ? 1 : (targetY < y ? -1 : 0));
-//
-//         // Vérifier si la cellule cible est libre
-//         if (!_nextCells[moveX][moveY].hasAnimal()) {
-//             return _nextCells[moveX][moveY];
-//         } else {
-//             // Trouver une cellule adjacente libre
-//             vector<pair<int, int>> possibleMoves = {
-//                     {moveX - 1, moveY - 1}, {moveX - 1, moveY}, {moveX - 1, moveY + 1},
-//                     {moveX, moveY - 1},                     {moveX, moveY + 1},
-//                     {moveX + 1, moveY - 1}, {moveX + 1, moveY}, {moveX + 1, moveY + 1}
-//             };
-//
-//             for (const auto& move : possibleMoves) {
-//                 int adjX = move.first;
-//                 int adjY = move.second;
-//                 if (adjX >= 0 && adjX < _size[0] && adjY >= 0 && adjY < _size[1]) {
-//                     if (!_nextCells[adjX][adjY].hasAnimal()) {
-//                         return _nextCells[adjX][adjY];
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     // Si aucune herbe n'est trouvée ou que toutes les cellules adjacentes sont occupées, déplacement aléatoire
-//     return getNextRandomSheepPosition(x, y);
-// }
+    for (const auto& neighbor : neighbors) {
+        if (neighbor.second->hasWolf()) {
+            Wolf& otherWolf = *dynamic_cast<Wolf*>(neighbor.second->getAnimal());
+            if (wolf.canBreedWith(otherWolf)) {
+                hasBred = true;
+            }
+        }
+    }
+
+    if (hasBred) {
+        vector<pair<int, int>> position;
+        for (const auto& move : neighbors) {
+            position.push_back(move.first);
+        }
+
+        shuffle(position.begin(), position.end(), default_random_engine(rand()));
+
+        for(auto babyPosition : position) {
+            if(babyPosition.first >= 0 && babyPosition.first < _size[0] && babyPosition.second >= 0 && babyPosition.second < _size[1]) {
+                if(!_cells[babyPosition.first][babyPosition.second].hasAnimal()) {
+                    _cells[babyPosition.first][babyPosition.second].addAnimal(make_unique<Wolf>(randomGender()));
+                    _wolfQuantity++;
+                    wolf.breed();
+                    addMessage({babyPosition.first, babyPosition.second}, "A baby wolf is born");
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Universe::breedSheep(const int x, const int y, Sheep& sheep) {
+    map<pair<int, int>, Cell*> neighbors = neighboor(x, y);
+
+    bool hasBred = false;
+
+    for (const auto& neighbor : neighbors) {
+        if (neighbor.second->hasSheep()) {
+            Sheep& otherSheep = *dynamic_cast<Sheep*>(neighbor.second->getAnimal());
+            if (sheep.canBreedWith(otherSheep)) {
+                hasBred = true;
+            }
+        }
+    }
+
+    if (hasBred) {
+        vector<pair<int, int>> position;
+        for (const auto& move : neighbors) {
+            position.push_back(move.first);
+        }
+
+        shuffle(position.begin(), position.end(), default_random_engine(rand()));
+
+        for(auto babyPosition : position) {
+            if(babyPosition.first >= 0 && babyPosition.first < _size[0] && babyPosition.second >= 0 && babyPosition.second < _size[1]) {
+                if(!_cells[babyPosition.first][babyPosition.second].hasAnimal()) {
+                    _cells[babyPosition.first][babyPosition.second].addAnimal(make_unique<Sheep>(randomGender()));
+                    _sheepQuantity++;
+                    sheep.breed();
+                    addMessage({babyPosition.first, babyPosition.second}, "A baby sheep is born");
+                    break;
+                }
+            }
+        }
+    }
+}
 
 string Universe::positionToString(const int x, const int y) {
     const char letter = 'A' + x;
-    return string(1, letter) + to_string(y);
+    return string(1, letter) + to_string(y+1);
 }
 
 void Universe::addMessage(const pair<int, int>& coordinates, const string &message) {

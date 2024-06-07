@@ -59,7 +59,7 @@ void SimulationView::printSeparator(const int cols, const bool isHeader) const {
     if (isHeader) {
         cout << setw(_cellWidth + 1) << " ";
         for (int i = 0; i < cols; ++i) {
-            cout << setw(_cellWidth) << centered(to_string(i)) << " ";
+            cout << setw(_cellWidth) << centered(to_string(i+1)) << " ";
         }
         cout << endl;
     } else {

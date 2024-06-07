@@ -2,8 +2,8 @@
 
 const int Wolf::_maxSatiety = 10;
 const int Wolf::_lifespan = 60;
-const int Wolf::_adultAge = 8;
-const int Wolf::_cooldown = 4;
+const int Wolf::_adultAge = 2;
+const int Wolf::_cooldown = 2;
 
 Wolf::Wolf(const Gender gender)
     : Animal(gender, _adultAge, _lifespan, _maxSatiety, _cooldown) {}

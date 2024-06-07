@@ -8,8 +8,8 @@
 #include <fstream>
 #include <filesystem>
 
-const vector<int> Simulation::_dimensions = {5, 5};
-int Simulation::_sheepQuantity = 2;
+const vector<int> Simulation::_dimensions = {5, 12};
+int Simulation::_sheepQuantity = 30;
 int Simulation::_wolfQuantity = 0;
 
 Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(false) {

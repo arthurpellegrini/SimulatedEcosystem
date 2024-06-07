@@ -4,7 +4,7 @@ Animal::Animal(const Gender gender, const int adultAge, const int lifespan, cons
     : Animal(gender, 0, adultAge, lifespan,  maxSatiety, maxSatiety, cooldown) {}
 
 Animal::Animal(const Gender gender, const int age, const int adultAge, const int lifespan, const int satiety, const int maxSatiety, const int cooldown)
-    : _gender(gender), _age(age), _adultAge(adultAge), _lifespan(lifespan), _satiety(satiety), _maxSatiety(maxSatiety), _cooldown(cooldown), _breedCooldown(0) {
+    : _gender(gender), _age(age), _adultAge(adultAge), _lifespan(lifespan), _cooldown(cooldown), _breedCooldown(0), _satiety(satiety), _maxSatiety(maxSatiety) {
 }
 
 Animal::~Animal() = default;
@@ -61,11 +61,13 @@ void Animal::updateBreedCooldown()
         {
             _canBreed = true;
         }
+    } else if (_age > _adultAge) {
+        _canBreed = true;
     }
 }
 bool Animal::canBreed() const
 {
-    return _canBreed && _age > _adultAge;
+    return _canBreed;
 }
 bool Animal::canBreedWith(const Animal &animal) const {
     return canBreed() && animal.canBreed() && (_gender == Gender::Female && animal.getGender() == Gender::Male);
