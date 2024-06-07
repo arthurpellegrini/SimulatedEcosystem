@@ -9,12 +9,14 @@
 #include <filesystem>
 
 const vector<int> Simulation::_dimensions = {10, 10};
+int Simulation::_sheepQuantity = 30;
+int Simulation::_wolfQuantity = 5;
 
 Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(false) {
     _simulationView = new SimulationView();
     // const auto dimensions = simulationView->requestDimensions();
     try {
-        _universe = new Universe(_dimensions, 50, 50);
+        _universe = new Universe(_dimensions, _sheepQuantity, _wolfQuantity);
     } catch (const std::exception& e) {
         std::cerr << "Error : " << e.what() << '\n';
     }
@@ -80,7 +82,7 @@ void Simulation::load() {
     std::cin >> fileIndex;
 
     if (fileIndex >= 0 && fileIndex < files.size()) {
-        std::string fileName = files[fileIndex];
+        const std::string fileName = files[fileIndex];
         Universe* newUniverse = UniverseImporter::importFromFile(fileName);
         if (newUniverse) {
             delete _universe;
@@ -105,14 +107,14 @@ void Simulation::simulationLoop() {
                 _universe->nextGeneration();
                 _simulationView->display(*_universe);
             } else {
-                _simulationView->displayEndSimulation(*_universe);
+                SimulationView::displayEndSimulation(*_universe);
                 stop();
                 break;
             }
         }
 
-        if (_kbhit()) { 
-            char key = _getch(); 
+        if (_kbhit()) {
+            const char key = _getch();
             if (key == 'p') {
                 pause();
             } else if (key == 's') {
@@ -125,8 +127,7 @@ void Simulation::simulationLoop() {
 }
 
 void Simulation::handlePauseMenu() {
-    char choice = _simulationView->displayPauseMenu();
-    switch (choice) {
+    switch (SimulationView::displayPauseMenu()) {
         case 'r':
             resume();
         break;

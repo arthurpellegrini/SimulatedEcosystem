@@ -2,14 +2,14 @@
 #define NATURALELEMENT_H
 
 #include <string>
+#include "../Entity.h"
 
 using namespace std;
 
 
-class NaturalElement {
+class NaturalElement : public Entity {
 public:
     virtual ~NaturalElement() = default;
-    virtual string display() const = 0;
 };
 
 #endif // NATURALELEMENT_H

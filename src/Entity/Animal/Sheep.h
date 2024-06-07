@@ -6,7 +6,7 @@
 
 class Sheep : public Animal {
 public:
-    Sheep(Gender gender);
+    explicit Sheep(Gender gender);
     Sheep(Gender gender, int age, int satiety);
 
     string display() const override;

@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 #include <iostream>
-#include "../Animal/Animal.h"
-#include "../NaturalElement/NaturalElement.h"
+#include "../Entity/Animal/Animal.h"
+#include "../Entity/NaturalElement/NaturalElement.h"
 
 using namespace std;
 

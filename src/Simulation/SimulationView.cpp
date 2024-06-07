@@ -1,4 +1,6 @@
 #include "SimulationView.h"
+#include "Center.h"
+
 
 #include <algorithm>
 #include <iostream>
@@ -6,11 +8,11 @@
 #include <limits>
 
 
-constexpr char LINE_CHAR = '-';
-constexpr char CORNER_CHAR = '+';
-constexpr char VERTICAL_CHAR = '|';
+char SimulationView::_lineChar = '-';
+char SimulationView::_cornerChar = '+';
+char SimulationView::_verticalChar = '|';
 
-constexpr int CELL_WIDTH = 5;
+int SimulationView::_cellWidth = 5;
 
 
 SimulationView::SimulationView(const bool showCoordinates, const bool showQuantities, const bool showMessages,
@@ -40,10 +42,10 @@ void SimulationView::printUniverse(Universe &universe) const {
     for (int i = 0; i < cells.size(); ++i) {
         printSeparator(nbCols, false);
 
-        if (_showCoordinates) cout << setw(CELL_WIDTH) << centered(string(1, letter++)) << VERTICAL_CHAR;
-        else cout << VERTICAL_CHAR;
+        if (_showCoordinates) cout << setw(_cellWidth) << centered(string(1, letter++)) << _verticalChar;
+        else cout << _verticalChar;
         for (int y = 0; y < nbCols; ++y) {
-            cout << setw(CELL_WIDTH) << centered(cells[i][y].display()) << VERTICAL_CHAR;
+            cout << setw(_cellWidth) << centered(cells[i][y].display()) << _verticalChar;
         }
         cout << endl;
 
@@ -55,17 +57,17 @@ void SimulationView::printUniverse(Universe &universe) const {
 
 void SimulationView::printSeparator(const int cols, const bool isHeader) const {
     if (isHeader) {
-        cout << setw(CELL_WIDTH + 1) << " ";
+        cout << setw(_cellWidth + 1) << " ";
         for (int i = 0; i < cols; ++i) {
-            cout << setw(CELL_WIDTH) << centered(to_string(i)) << " ";
+            cout << setw(_cellWidth) << centered(to_string(i)) << " ";
         }
         cout << endl;
     } else {
-        if (_showCoordinates) cout << setw(CELL_WIDTH + 1) << CORNER_CHAR;
-        else cout << CORNER_CHAR;
-        const string side = string(CELL_WIDTH, LINE_CHAR) + string(1, CORNER_CHAR);
+        if (_showCoordinates) cout << setw(_cellWidth + 1) << _cornerChar;
+        else cout << _cornerChar;
+        const string side = string(_cellWidth, _lineChar) + string(1, _cornerChar);
         for (int i = 0; i < cols; ++i) {
-            cout << setw(CELL_WIDTH) << side;
+            cout << setw(_cellWidth) << side;
         }
         cout << endl;
     }
@@ -75,25 +77,25 @@ void SimulationView::printMessages(Universe &universe) const {
     if (_showMessages) {
         vector<string> messages = universe.getMessages(universe.getGenerations());
         for (const auto& message: messages) {
-            if (_showCoordinates) cout << setw(CELL_WIDTH + 1) << " ";
+            if (_showCoordinates) cout << setw(_cellWidth + 1) << " ";
             cout << message << endl;
         }
     }
 }
 
 void SimulationView::printInformations(const Universe &universe) const {
-    if (_showCoordinates) cout << setw(CELL_WIDTH + 1) << " ";
+    if (_showCoordinates) cout << setw(_cellWidth + 1) << " ";
     if (_showQuantities && _showGeneration) {
         cout << setw(20) << centered("Generation: " + to_string(universe.getGenerations()));
-        cout << VERTICAL_CHAR << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
-        cout << VERTICAL_CHAR << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << _verticalChar << setw(20) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
+        cout << _verticalChar << setw(20) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
         cout << endl << endl;
     } else if (_showGeneration) {
         cout << setw(60) << centered("Generation: " + to_string(universe.getGenerations()));
         cout << endl << endl;
     } else if (_showQuantities) {
         cout << setw(30) << centered("Sheep: " + to_string(universe.getSheepQuantity()));
-        cout << VERTICAL_CHAR << setw(30) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
+        cout << _verticalChar << setw(30) << centered("Wolf: " + to_string(universe.getWolfQuantity()));
         cout << endl << endl;
     } else {
         cout << endl;
@@ -107,7 +109,7 @@ vector<int> SimulationView::requestDimensions() const {
     return {x, y};
 }
 
-int SimulationView::getValidIntegerInput(const string &prompt) const {
+int SimulationView::getValidIntegerInput(const string &prompt) {
     string input;
     int value;
     cout << prompt;
@@ -124,7 +126,7 @@ int SimulationView::getValidIntegerInput(const string &prompt) const {
     return value;
 }
 
-char SimulationView::displayPauseMenu() const {
+char SimulationView::displayPauseMenu() {
     char choice;
     cout << "Simulation en pause:" << endl;
     cout << "Options: r => resume, e => exit, s => save, l => load" << endl;
@@ -145,6 +147,6 @@ char SimulationView::displayPauseMenu() const {
     return choice;
 }
 
-void SimulationView::displayEndSimulation(Universe &universe) const {
+void SimulationView::displayEndSimulation(const Universe &universe) {
     cout << "The universe is dead after " << universe.getGenerations() << " generations." << endl;
 }

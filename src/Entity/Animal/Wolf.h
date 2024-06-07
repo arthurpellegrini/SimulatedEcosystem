@@ -6,7 +6,7 @@
 
 class Wolf : public Animal {
 public:
-    Wolf(Gender gender);
+    explicit Wolf(Gender gender);
     Wolf(Gender gender, int age, int satiety);
 
     string display() const override;

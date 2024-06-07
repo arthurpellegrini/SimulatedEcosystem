@@ -28,6 +28,8 @@ private:
     void handlePauseMenu();
 
     static const vector<int> _dimensions;
+    static int _sheepQuantity;
+    static int _wolfQuantity;
 };
 
 #endif // SIMULATION_H

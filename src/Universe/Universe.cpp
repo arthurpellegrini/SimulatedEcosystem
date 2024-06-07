@@ -6,10 +6,10 @@
 #include <random>
 #include <sstream>
 
-#include "../Animal/Wolf.h"
-#include "../Animal/Sheep.h"
-#include "../NaturalElement/Grass.h"
-#include "../NaturalElement/SaltMinerals.h"
+#include "../Entity/Animal/Wolf.h"
+#include "../Entity/Animal/Sheep.h"
+#include "../Entity/NaturalElement/Grass.h"
+#include "../Entity/NaturalElement/SaltMinerals.h"
 
 
 Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
@@ -61,6 +61,33 @@ vector<int> Universe::randomAnimalPosition() const {
     } while (_cells[x][y].hasAnimal());
 
     return {x, y};
+}
+
+map<pair<int, int>, Entity*> Universe::neighboor(const int x, const int y) {
+    map<pair<int, int>, Entity*> neighbors;
+
+    const vector<pair<int, int>> moves = {
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1},           {0, 1},
+        {1, -1}, {1, 0}, {1, 1}
+    };
+
+    for (const auto& move : moves) {
+        int nx = x + move.first;
+        int ny = y + move.second;
+
+        if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
+            Cell& cell = _cells[nx][ny];
+
+            if (cell.hasAnimal()) {
+                neighbors[{nx, ny}] = cell.getAnimal();
+            } else if (cell.hasNaturalElement()) {
+                neighbors[{nx, ny}] = cell.getNaturalElement();
+            }
+        }
+    }
+
+    return neighbors;
 }
 
 void Universe::nextGeneration() {
@@ -212,7 +239,8 @@ void Universe::processWolf(const int x, const int y) {
         Cell& nextCell = _cells[position[0]][position[1]];
         // TODO: Remove this debug message
         // cout << positionToString(position[0], position[1]) << "A wolf came from " + positionToString(x, y));
-        addMessage({position[0], position[1]}, "A wolf moves");
+        if (position[0] != x || position[1] != y)
+            addMessage({position[0], position[1]}, "A wolf moves");
 
         if(nextCell.hasSheep()) {
             nextCell.removeAnimal();
@@ -248,7 +276,8 @@ void Universe::processSheep(const int x, const int y) {
         Cell& nextCell = _cells[position[0]][position[1]];
         // TODO: Remove this debug message
         // cout << positionToString(position[0], position[1]) << "A sheep came from " + positionToString(x, y));
-        addMessage({position[0], position[1]}, "A sheep moves");
+        if (position[0] != x || position[1] != y)
+            addMessage({position[0], position[1]}, "A sheep moves");
 
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
