@@ -8,9 +8,9 @@
 #include <fstream>
 #include <filesystem>
 
-const vector<int> Simulation::_dimensions = {64, 10};
-int Simulation::_sheepQuantity = 30;
-int Simulation::_wolfQuantity = 5;
+const vector<int> Simulation::_dimensions = {5, 10};
+int Simulation::_sheepQuantity = 5;
+int Simulation::_wolfQuantity = 2;
 
 Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(false) {
     _simulationView = new SimulationView();

@@ -4,6 +4,7 @@ const int Sheep::_maxSatiety = 5;
 const int Sheep::_lifespan = 50;
 const int Sheep::_adultAge = 4;
 const int Sheep::_cooldown = 3;
+const int Sheep::_fov = 3;
 
 Sheep::Sheep(const Gender gender)
     : Animal(gender, _adultAge, _lifespan, _maxSatiety, _cooldown) {}

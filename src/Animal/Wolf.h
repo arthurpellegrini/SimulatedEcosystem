@@ -16,6 +16,7 @@ private:
     static const int _lifespan;
     static const int _cooldown;
     static const int _maxSatiety;
+    static const int _fov;
 };
 
 #endif // WOLF_H

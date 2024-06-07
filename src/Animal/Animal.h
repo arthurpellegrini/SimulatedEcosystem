@@ -34,6 +34,7 @@ public:
     int getAge() const;
     int getAdultAge() const;
     int getSatiety() const;
+    static int getFOV();
 
 protected:
     Gender _gender;
@@ -47,6 +48,8 @@ protected:
 
     int _satiety;
     int _maxSatiety;
+
+    static int _fov;
 
     bool _canMove = true;
     bool _canBreed = false;

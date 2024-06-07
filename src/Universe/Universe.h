@@ -58,6 +58,10 @@ private:
     vector<int> randomWolfPosition(int x, int y);
     vector<int> randomSheepPosition(int x, int y);
 
+    vector<pair<int, int>> findSheepWithinFov(int x, int y, int fov) const;
+
+    vector<pair<int, int>> findGrassWithinFov(int x, int y, int fov) const;
+
     void breedWolf(int x, int y, Wolf& wolf);
     void breedSheep(int x, int y, Sheep& sheep);
 

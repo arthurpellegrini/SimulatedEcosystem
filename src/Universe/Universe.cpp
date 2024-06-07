@@ -217,6 +217,20 @@ void Universe::processSheep(const int x, const int y) {
 }
 
 vector<int> Universe::randomWolfPosition(int x, int y) {
+    vector<pair<int, int>> sheepPositions = findSheepWithinFov(x, y, Wolf::getFOV());
+    if (!sheepPositions.empty()) {
+        // Choisir une position de mouton aléatoire
+        pair<int, int> target = sheepPositions.front();
+
+        // Se déplacer vers la position cible
+        int moveX = x + (target.first > x ? 1 : (target.first < x ? -1 : 0));
+        int moveY = y + (target.second > y ? 1 : (target.second < y ? -1 : 0));
+
+        if (!_cells[moveX][moveY].hasWolf()) {
+            return {moveX, moveY};
+        }
+    }
+
     map<pair<int, int>, Cell*> possibleMoves = neighboor(x, y);
 
     vector<pair<int, int>> positions;
@@ -249,6 +263,27 @@ vector<int> Universe::randomWolfPosition(int x, int y) {
 }
 
 vector<int> Universe::randomSheepPosition(int x, int y) {
+    vector<pair<int, int>> grassPositions = findGrassWithinFov(x, y, Sheep::getFOV());
+    if (!grassPositions.empty()) {
+        // Trouver la position de l'herbe la plus proche
+        pair<int, int> target = grassPositions[0];
+        int minDistance = abs(target.first - x) + abs(target.second - y);
+        for (const auto& pos : grassPositions) {
+            int distance = abs(pos.first - x) + abs(pos.second - y);
+            if (distance < minDistance) {
+                target = pos;
+                minDistance = distance;
+            }
+        }
+        // Se déplacer vers la position cible
+        int moveX = x + (target.first > x ? 1 : (target.first < x ? -1 : 0));
+        int moveY = y + (target.second > y ? 1 : (target.second < y ? -1 : 0));
+
+        if (!_cells[moveX][moveY].hasAnimal()) {
+            return {moveX, moveY};
+        }
+    }
+
     map<pair<int, int>, Cell*> possibleMoves = neighboor(x, y);
 
     vector<pair<int, int>> positions;
@@ -278,6 +313,47 @@ vector<int> Universe::randomSheepPosition(int x, int y) {
     }
 
     return {x, y};
+}
+
+vector<pair<int, int>> Universe::findSheepWithinFov(const int x, const int y, const int fov) const {
+    vector<pair<int, int>> sheepPositions;
+    for (int i = -fov; i <= fov; ++i) {
+        for (int j = -fov; j <= fov; ++j) {
+            int nx = x + i;
+            int ny = y + j;
+            if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
+                if (_cells[nx][ny].hasSheep()) {
+                    sheepPositions.emplace_back(nx, ny);
+                }
+            }
+        }
+        // Si des positions de moutons ont été trouvées, les mélanger et retourner une position aléatoire
+        if (!sheepPositions.empty()) {
+            shuffle(sheepPositions.begin(), sheepPositions.end(), default_random_engine(rand()));
+            return { sheepPositions.front() };
+        }
+    }
+    return sheepPositions;
+}
+
+vector<pair<int, int>> Universe::findGrassWithinFov(const int x, const int y, const int fov) const {
+    vector<pair<int, int>> grassPositions;
+    for (int i = -fov; i <= fov; ++i) {
+        for (int j = -fov; j <= fov; ++j) {
+            int nx = x + i;
+            int ny = y + j;
+            if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
+                if (_cells[nx][ny].hasGrass() && !_cells[nx][ny].hasAnimal()) {
+                    grassPositions.emplace_back(nx, ny);
+                }
+            }
+        }
+        if (!grassPositions.empty()) {
+            shuffle(grassPositions.begin(), grassPositions.end(), default_random_engine(rand()));
+            return { grassPositions.front() };
+        }
+    }
+    return grassPositions;
 }
 
 void Universe::breedWolf(const int x, const int y, Wolf& wolf) {
