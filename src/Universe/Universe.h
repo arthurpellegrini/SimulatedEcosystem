@@ -4,7 +4,6 @@
 #include <map>
 #include <vector>
 #include "Cell.h"
-#include "../Entity/Entity.h"
 
 using namespace std;
 
@@ -42,7 +41,7 @@ private:
 
     vector<int> randomAnimalPosition() const;
 
-    map<pair<int, int>, Entity *> neighboor(int x, int y);
+    map<pair<int, int>, Cell *> neighboor(int x, int y);
 
     void processNaturalElements();
     void processSaltMinerals(int x, int y);
@@ -59,7 +58,7 @@ private:
     vector<int> randomWolfPosition(int x, int y);
     vector<int> randomSheepPosition(int x, int y);
 
-    string positionToString(int x, int y);
+    static string positionToString(int x, int y);
 
     void addMessage(const pair<int, int>& coordinates, const string &message);
 };

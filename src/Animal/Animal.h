@@ -2,18 +2,17 @@
 #define ANIMAL_H
 
 #include <iostream>
-#include <string>
 #include "Gender.h"
-#include "../Entity.h"
 
 using namespace std;
 
-class Animal : public Entity {
+class Animal {
 public:
     Animal(Gender gender, int maxSatiety, int lifespan);
     Animal(Gender gender, int maxSatiety, int lifespan, int age, int satiety);
 
-    ~Animal() override;
+    ~Animal();
+    virtual string display() const = 0;
 
     void move();
     bool canMove() const;
