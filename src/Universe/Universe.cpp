@@ -86,6 +86,7 @@ void Universe::processSaltMinerals(const int x, const int y) {
     if (saltMinerals.shouldTransform()) {
         _cells[x][y].removeNaturalElement();
         _cells[x][y].addNaturalElement(make_unique<Grass>());
+        addMessage({x, y}, "Grass grew again.");
     }
 }
 
@@ -191,26 +192,27 @@ void Universe::processWolf(const int x, const int y) {
     Wolf wolf = *dynamic_cast<Wolf*>(_cells[x][y].getAnimal());
     wolf.move();
     wolf.increaseAge();
-    const string pos = positionToString(x, y);
 
     if(wolf.isDead()) { // Mort Naturelle
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _wolfQuantity--;
-        addMessage("Wolf died at " + pos);
+        addMessage({x, y},"A wolf died naturally.");
+        //TODO : Différencier OldAge et Hunger
     } else {
         wolf.decreaseSatiety();
 
         const vector<int> position = randomWolfPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
         const string nextPos = positionToString(position[0], position[1]);
-        addMessage("Wolf moved from " + pos + " to " + nextPos);
+        //TODO: Remove this debug message
+        // addMessage({position[0], position[1]}, "A wolf came from " + positionToString(x, y));
 
         if(nextCell.hasSheep()) {
             nextCell.removeAnimal();
             _sheepQuantity--;
             wolf.eat();
-            addMessage("Wolf ate sheep at " + nextPos);
+            addMessage({position[0], position[1]}, "A wolf ate sheep");
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Wolf>(wolf));
@@ -227,20 +229,21 @@ void Universe::processSheep(const int x, const int y) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _sheepQuantity--;
-        addMessage("Sheep died at " + pos);
+        addMessage({x, y}, "A sheep died naturally.");
+        //TODO : Différencier OldAge et Hunger
     } else {
         sheep.decreaseSatiety();
 
         const vector<int> position = randomSheepPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
         const string nextPos = positionToString(position[0], position[1]);
-
-        addMessage("Sheep moved from " + pos + " to " + nextPos);
+        //TODO: Remove this debug message
+        // addMessage({position[0], position[1]}, "A sheep came from " + positionToString(x, y));
 
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
             sheep.eat();
-            addMessage("Sheep ate grass at " + nextPos);
+            addMessage({position[0], position[1]}, "A sheep ate grass");
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Sheep>(sheep));
@@ -435,17 +438,30 @@ string Universe::positionToString(const int x, const int y) {
     return string(1, letter) + to_string(y);
 }
 
-void Universe::addMessage(const string& message) {
+void Universe::addMessage(const pair<int, int>& coordinates, const string &message) {
     if (_messages.empty() || _messages.back().first != _generations) {
         _messages.push_back({_generations, {}});
     }
-    _messages.back().second.push_back(message);
+    string coordString = "[" + positionToString(coordinates.first, coordinates.second) + "]";
+    for(auto& msg : _messages.back().second) {
+        if(msg.second == message) {
+            msg.first.push_back(coordString);
+            return;
+        }
+    }
+    _messages.back().second.push_back({{coordString}, message});
 }
 
 vector<string> Universe::getMessages(const int generation) {
+    vector<string> result;
     for (const auto& pair : _messages) {
         if (pair.first == generation) {
-            return pair.second;
+            for (const auto& msg : pair.second) {
+                for (const auto& coord : msg.first) {
+                    result.push_back(coord + " " + msg.second);
+                }
+            }
+            return result;
         }
     }
     return {};

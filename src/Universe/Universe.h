@@ -34,7 +34,7 @@ private:
     int _generations;
 
     vector<vector<Cell>> _cells;
-    vector<pair<int, vector<string>>> _messages;
+    vector<pair<int, vector<pair<vector<string>, string>>>> _messages;
 
     void generateRandomUniverse();
 
@@ -56,7 +56,8 @@ private:
     vector<int> randomSheepPosition(int x, int y);
 
     string positionToString(int x, int y);
-    void addMessage(const string &message);
+
+    void addMessage(const pair<int, int>& coordinates, const string &message);
 };
 
 #endif // UNIVERSE_H
