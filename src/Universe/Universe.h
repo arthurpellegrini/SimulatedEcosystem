@@ -63,6 +63,7 @@ private:
     void addMessage(const pair<int, int>& coordinates, const string &message);
 
     vector<pair<int, int>> findGrassWithinFov(int x, int y, int fov) const;
+    vector<pair<int, int>> findSheepWithinFov(int x, int y, int fov) const;
 };
 
 #endif // UNIVERSE_H
