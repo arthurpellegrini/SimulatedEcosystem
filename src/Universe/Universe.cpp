@@ -195,12 +195,16 @@ void Universe::processWolf(const int x, const int y) {
     wolf.move();
     wolf.increaseAge();
 
-    if(wolf.isDead()) { // Mort Naturelle
+    if(wolf.isOldAgeDead()) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _wolfQuantity--;
-        addMessage({x, y},"A wolf died naturally");
-        //TODO : Différencier OldAge et Hunger
+        addMessage({x, y},"A wolf dies of old age");
+    } else if(wolf.isHungerDead()) {
+        _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
+        _cells[x][y].removeAnimal();
+        _wolfQuantity--;
+        addMessage({x, y},"A wolf dies of hunger");
     } else {
         wolf.decreaseSatiety();
 
@@ -214,7 +218,7 @@ void Universe::processWolf(const int x, const int y) {
             nextCell.removeAnimal();
             _sheepQuantity--;
             wolf.eat();
-            addMessage({position[0], position[1]}, "A wolf ate sheep");
+            addMessage({position[0], position[1]}, "A wolf eats a sheep");
         }
         _cells[x][y].removeAnimal();
         nextCell.addAnimal(make_unique<Wolf>(wolf));
@@ -227,12 +231,16 @@ void Universe::processSheep(const int x, const int y) {
     sheep.increaseAge();
     const string pos = positionToString(x, y);
 
-    if(sheep.isDead()) { // Mort Naturelle
+    if(sheep.isOldAgeDead()) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _sheepQuantity--;
-        addMessage({x, y}, "A sheep died naturally");
-        // TODO : Différencier OldAge et Hunger
+        addMessage({x, y}, "A sheep dies of old age");
+    } else if(sheep.isHungerDead()) {
+        _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
+        _cells[x][y].removeAnimal();
+        _sheepQuantity--;
+        addMessage({x, y}, "A sheep dies of hunger");
     } else {
         sheep.decreaseSatiety();
 

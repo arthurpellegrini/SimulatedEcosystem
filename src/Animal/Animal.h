@@ -19,7 +19,8 @@ public:
     void resetCanMove();
 
     void increaseAge();
-    bool isDead() const;
+    bool isOldAgeDead() const;
+    bool isHungerDead() const;
 
     void eat();
     void decreaseSatiety();

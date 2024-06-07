@@ -19,7 +19,8 @@ void Animal::resetCanMove() { _canMove = true; }
 
 
 void Animal::increaseAge() { _age++; if(_age == _adultAge) _lastBreed=_breedCooldown; if (_lastBreed != -1) _lastBreed++;}
-bool Animal::isDead() const { return _satiety <= 0 || _age >= _lifespan; }
+bool Animal::isOldAgeDead() const { return _age >= _lifespan; }
+bool Animal::isHungerDead() const { return _satiety <= 0; }
 
 void Animal::eat() { _satiety = _maxSatiety; }
 void Animal::decreaseSatiety() { _satiety--; }
