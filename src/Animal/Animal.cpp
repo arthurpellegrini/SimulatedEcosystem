@@ -1,9 +1,11 @@
 #include "Animal.h"
 
-Animal::Animal(const Gender gender, const int maxSatiety, const int lifespan)
-    : _age(0), _satiety(maxSatiety), _maxSatiety(maxSatiety), _lifespan(lifespan), _gender(gender) {}
-Animal::Animal(const Gender gender, const int maxSatiety, const int lifespan, const int age, const int satiety)
-    : _age(age), _satiety(satiety), _maxSatiety(maxSatiety), _lifespan(lifespan), _gender(gender) {}
+Animal::Animal(const Gender gender, const int adultAge, const int lifespan, const int maxSatiety, const int cooldown)
+    : Animal(gender, 0, adultAge, lifespan,  maxSatiety, maxSatiety, cooldown) {}
+
+Animal::Animal(const Gender gender, const int age, const int adultAge, const int lifespan, const int satiety, const int maxSatiety, const int cooldown)
+    : _gender(gender), _age(age), _adultAge(adultAge), _lifespan(lifespan), _cooldown(cooldown), _breedCooldown(0), _satiety(satiety), _maxSatiety(maxSatiety) {
+}
 
 Animal::~Animal() = default;
 
@@ -24,6 +26,7 @@ void Animal::resetCanMove()
 void Animal::increaseAge()
 {
     _age++;
+    updateBreedCooldown();
 }
 bool Animal::isOldAgeDead() const
 {
@@ -43,9 +46,38 @@ void Animal::decreaseSatiety()
     _satiety--;
 }
 
-int Animal::getAge() const { return _age; }
-int Animal::getSatiety() const { return _satiety; }
+void Animal::breed()
+{
+    _canBreed = false;
+    _breedCooldown = _cooldown;
+}
+
+void Animal::updateBreedCooldown()
+{
+    if (_breedCooldown > 0)
+    {
+        _breedCooldown--;
+        if (_breedCooldown == 0)
+        {
+            _canBreed = true;
+        }
+    } else if (_age > _adultAge) {
+        _canBreed = true;
+    }
+}
+bool Animal::canBreed() const
+{
+    return _canBreed;
+}
+bool Animal::canBreedWith(const Animal &animal) const {
+    return canBreed() && animal.canBreed() && (_gender == Gender::Female && animal.getGender() == Gender::Male);
+}
+
 Gender Animal::getGender() const { return _gender; }
+int Animal::getAge() const { return _age; }
+int Animal::getAdultAge() const { return _adultAge; }
+int Animal::getSatiety() const { return _satiety; }
+
 
 ostream& operator<<(ostream &os, const Animal &animal) {
     return os << animal.display();

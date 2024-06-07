@@ -8,10 +8,10 @@ using namespace std;
 
 class Animal {
 public:
-    Animal(Gender gender, int maxSatiety, int lifespan);
-    Animal(Gender gender, int maxSatiety, int lifespan, int age, int satiety);
+    Animal(Gender gender, int adultAge, int lifespan, int maxSatiety, int cooldown);
+    Animal(Gender gender, int age, int adultAge, int lifespan, int satiety, int maxSatiety, int cooldown);
 
-    ~Animal();
+    virtual ~Animal();
     virtual string display() const = 0;
 
     void move();
@@ -25,21 +25,31 @@ public:
     void eat();
     void decreaseSatiety();
 
-    bool canBreed(const Animal &animal) const;
     void breed();
+    void updateBreedCooldown();
+    bool canBreed() const;
+    bool canBreedWith(const Animal &animal) const;
 
-    int getAge() const;
-    int getSatiety() const;
     Gender getGender() const;
+    int getAge() const;
+    int getAdultAge() const;
+    int getSatiety() const;
 
 protected:
-    int _age;
-    int _satiety;
-    int _maxSatiety;
-    int _lifespan;
     Gender _gender;
 
+    int _age;
+    int _adultAge;
+    int _lifespan;
+
+    int _cooldown;
+    int _breedCooldown;
+
+    int _satiety;
+    int _maxSatiety;
+
     bool _canMove = true;
+    bool _canBreed = false;
 };
 
 ostream& operator<<(ostream &os, const Animal &animal);

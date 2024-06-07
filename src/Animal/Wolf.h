@@ -12,8 +12,10 @@ public:
     string display() const override;
 
 private:
-    static const int _maxSatiety;
+    static const int _adultAge;
     static const int _lifespan;
+    static const int _cooldown;
+    static const int _maxSatiety;
 };
 
 #endif // WOLF_H

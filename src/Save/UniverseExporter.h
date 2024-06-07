@@ -1,7 +1,3 @@
-//
-// Created by Admin on 03/06/2024.
-//
-
 #ifndef SIMULATEDECOSYSTEM_UNIVERSEEXPORTER_H
 #define SIMULATEDECOSYSTEM_UNIVERSEEXPORTER_H
 
@@ -11,7 +7,7 @@
 
 class UniverseExporter {
     public:
-        static string exportToFile(const std::string& filename, Universe* universe);
+        static string exportToFile(const string& filename, Universe* universe);
 };
 
 

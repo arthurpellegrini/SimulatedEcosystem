@@ -7,9 +7,8 @@
 #include "../NaturalElement/SaltMinerals.h"
 
 
-Cell::Cell(const vector<int>& position) :
+Cell::Cell() :
     _isEmpty(true),
-    _position(position),
     _animal(nullptr),
     _natural_element(nullptr)
 {
@@ -66,10 +65,6 @@ bool Cell::hasGrass() const {
 
 bool Cell::hasSaltMinerals() const {
     return hasNaturalElement() && dynamic_cast<SaltMinerals*>(_natural_element.get())!=nullptr;
-}
-
-vector<int> Cell::getPosition() const {
-    return _position;
 }
 
 Animal* Cell::getAnimal() const {

@@ -1,7 +1,3 @@
-//
-// Created by Admin on 03/06/2024.
-//
-
 #ifndef SIMULATEDECOSYSTEM_UNIVERSEIMPORTER_H
 #define SIMULATEDECOSYSTEM_UNIVERSEIMPORTER_H
 
@@ -10,7 +6,7 @@
 
 class UniverseImporter {
     public:
-    static Universe* importFromFile(const std::string& filename);
+    static Universe* importFromFile(const string& filename);
 
 };
 

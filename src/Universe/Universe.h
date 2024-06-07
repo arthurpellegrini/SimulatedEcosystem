@@ -4,13 +4,18 @@
 #include <map>
 #include <vector>
 #include "Cell.h"
+#include "../Animal/Wolf.h"
+#include "../Animal/Sheep.h"
 
 using namespace std;
 
 
 class Universe {
 public:
-    Universe(const vector<int>& size);
+    explicit Universe(const vector<int>& size);
+
+    Universe(const vector<int> &size, int sheepQuantity, int wolfQuantity, int generation, bool isRandomGeneration);
+
     Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity);
 
     void nextGeneration();
@@ -33,23 +38,18 @@ private:
     int _sheepQuantity;
     int _wolfQuantity;
     int _generations;
+    bool _isRandomGeneration;
 
     vector<vector<Cell>> _cells;
     vector<pair<int, map<string, vector<pair<int, int>>>>> _messages;
 
     void generateRandomUniverse();
-
     vector<int> randomAnimalPosition() const;
-
-    map<pair<int, int>, Cell *> neighboor(int x, int y);
 
     void processNaturalElements();
     void processSaltMinerals(int x, int y);
 
-    // void processAnimalBreed(int x, int y);
-    // void processSheepBreed(int x, int y);
-    // void processWolfBreed(int x, int y);
-    // bool placeRandomBabyAnimal(int x, int y, unique_ptr<Animal> animal);
+    map<pair<int, int>, Cell *> neighboor(int x, int y);
 
     void processAnimals();
     void processWolf(int x, int y);
@@ -58,8 +58,10 @@ private:
     vector<int> randomWolfPosition(int x, int y);
     vector<int> randomSheepPosition(int x, int y);
 
-    static string positionToString(int x, int y);
+    void breedWolf(int x, int y, Wolf& wolf);
+    void breedSheep(int x, int y, Sheep& sheep);
 
+    static string positionToString(int x, int y);
     void addMessage(const pair<int, int>& coordinates, const string &message);
 };
 
