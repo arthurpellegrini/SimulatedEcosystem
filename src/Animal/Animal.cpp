@@ -1,9 +1,11 @@
 #include "Animal.h"
 
-Animal::Animal(const Gender gender, const int maxSatiety, const int lifespan)
-    : _age(0), _satiety(maxSatiety), _maxSatiety(maxSatiety), _lifespan(lifespan), _gender(gender) {}
+
 Animal::Animal(const Gender gender, const int maxSatiety, const int lifespan, const int age, const int satiety)
     : _age(age), _satiety(satiety), _maxSatiety(maxSatiety), _lifespan(lifespan), _gender(gender) {}
+
+Animal::Animal(const Gender gender, const int maxSatiety, const int lifespan)
+    : Animal(gender, maxSatiety, lifespan, 0, maxSatiety) {}
 
 Animal::~Animal() = default;
 
