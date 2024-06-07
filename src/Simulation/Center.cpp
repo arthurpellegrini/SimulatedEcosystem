@@ -1,7 +1,7 @@
 #include "Center.h"
 
 template<typename charT, typename traits>
-Center<charT, traits>::Center(std::basic_string<charT, traits> str) : str_(str) {}
+Center<charT, traits>::Center(basic_string<charT, traits> str) : str_(str) {}
 
 template<typename charT, typename traits>
 Center<charT, traits> centered(basic_string<charT, traits> str) {

@@ -7,41 +7,41 @@
 #include "../Animal/Sheep.h"
 #include "../Animal/Wolf.h"
 
-Universe* UniverseImporter::importFromFile(const std::string &filename) {
+Universe* UniverseImporter::importFromFile(const string &filename) {
 
-    std::cout << "Importing universe from file: " << filename << std::endl;
-    std::ifstream inFile(filename);
+    cout << "Importing universe from file: " << filename << endl;
+    ifstream inFile(filename);
 
     if (!inFile.is_open()) {
-        std::cerr << "Error: Could not open file " << filename << " for reading." << std::endl;
+        cerr << "Error: Could not open file " << filename << " for reading." << endl;
         return nullptr;
     }
 
     int rows, cols;
     inFile >> rows >> cols;
 
-    inFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 
     Universe* universe = new Universe({rows, cols});
 
-    std::string line;
+    string line;
 
     int numSheep = 0;
     int numWolves = 0;
 
-    while (std::getline(inFile, line)) {
-        std::istringstream iss(line);
-        std::string part;
+    while (getline(inFile, line)) {
+        istringstream iss(line);
+        string part;
         int posX, posY;
 
         // Lire les éléments
-        std::getline(iss, part, ';');
-        posX = std::stoi(part);
+        getline(iss, part, ';');
+        posX = stoi(part);
 
-        std::getline(iss, part, ';');
-        posY = std::stoi(part);
+        getline(iss, part, ';');
+        posY = stoi(part);
 
-        std::getline(iss, part, ';');
+        getline(iss, part, ';');
         char element1 = part[0];
         char element2 = part[1];
         char elements[] = {element1, element2};
@@ -51,15 +51,15 @@ Universe* UniverseImporter::importFromFile(const std::string &filename) {
         Gender gender = Gender::Male;
 
         if (element1 == 'S' || element1 == 'W') {
-            std::cout << "Reading animal data" << std::endl;
+            cout << "Reading animal data" << endl;
 
-            std::getline(iss, part, ';');
-            age = std::stoi(part);
+            getline(iss, part, ';');
+            age = stoi(part);
 
-            std::getline(iss, part, ';');
-            satiety = std::stoi(part);
+            getline(iss, part, ';');
+            satiety = stoi(part);
 
-            std::getline(iss, part, ';');
+            getline(iss, part, ';');
             char genderChar = part[0];
             gender = (genderChar == 'M' ? Gender::Male : Gender::Female);
         }
@@ -70,33 +70,33 @@ Universe* UniverseImporter::importFromFile(const std::string &filename) {
             switch (element) {
                 case 'W':
                 {
-                    std::unique_ptr<Wolf> wolf = std::make_unique<Wolf>(gender, age, satiety);
-                    cell.addAnimal(std::move(wolf));
+                    unique_ptr<Wolf> wolf = make_unique<Wolf>(gender, age, satiety);
+                    cell.addAnimal(move(wolf));
                     numWolves++;
                 }
                     break;
 
                 case 'S':
                 {
-                    std::unique_ptr<Sheep> sheep = std::make_unique<Sheep>(gender, age, satiety);
-                    cell.addAnimal(std::move(sheep));
+                    unique_ptr<Sheep> sheep = make_unique<Sheep>(gender, age, satiety);
+                    cell.addAnimal(move(sheep));
                     numSheep++;
                 }
                     break;
 
                 case ',':
-                    cell.addNaturalElement(std::make_unique<Grass>());
+                    cell.addNaturalElement(make_unique<Grass>());
                     break;
 
                 case '*':
-                    cell.addNaturalElement(std::make_unique<SaltMinerals>());
+                    cell.addNaturalElement(make_unique<SaltMinerals>());
                     break;
 
                 case ' ':
                     break;
 
                 default:
-                    std::cerr << "Element inconnu: " << element << std::endl;
+                    cerr << "Element inconnu: " << element << endl;
                     break;
             }
         }

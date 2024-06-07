@@ -7,7 +7,7 @@
 
 class UniverseExporter {
     public:
-        static string exportToFile(const std::string& filename, Universe* universe);
+        static string exportToFile(const string& filename, Universe* universe);
 };
 
 

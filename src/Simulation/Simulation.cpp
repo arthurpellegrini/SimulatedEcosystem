@@ -20,8 +20,8 @@ Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(fals
     try {
         _universe = new Universe(_dimensions, _sheepQuantity, _wolfQuantity, 0, true); // FOR TEST PURPOSES
         // _universe = new Universe(dimensions, sheepQuantity, wolfQuantity, 0, true);
-    } catch (const std::exception& e) {
-        std::cerr << "Error : " << e.what() << '\n';
+    } catch (const exception& e) {
+        cerr << "Error : " << e.what() << '\n';
     }
 
     _simulationView->display(*_universe);
@@ -49,7 +49,7 @@ void Simulation::stop() {
 
 void Simulation::save() {
     string fileName = UniverseExporter::exportToFile("save", _universe);
-    std::ifstream file(fileName);
+    ifstream file(fileName);
     if (file.good()) {
         cout << "Universe saved to " << fileName << endl;
     } else {
@@ -60,43 +60,43 @@ void Simulation::save() {
 
 void Simulation::load() {
 // On vérifie que le dossier 'save' existe ou non
-    if (!std::filesystem::exists("save")) {
-        std::cout << "Error: No save register, restart simulation." << std::endl;
+    if (!filesystem::exists("save")) {
+        cout << "Error: No save register, restart simulation." << endl;
         return;
     }
 
     // On vérifie que le dossier 'save' n'est pas vide
-    if (std::filesystem::is_empty("save")) {
-        std::cout << "Error: No save register, restart simulation." << std::endl;
+    if (filesystem::is_empty("save")) {
+        cout << "Error: No save register, restart simulation." << endl;
         return;
     }
 
-    std::vector<std::string> files;
+    vector<string> files;
     int index = 0;
 
-    for (const auto &entry : std::filesystem::directory_iterator("save")) {
-        std::cout << index << ": " << entry.path().filename() << std::endl;
+    for (const auto &entry : filesystem::directory_iterator("save")) {
+        cout << index << ": " << entry.path().filename() << endl;
         files.push_back(entry.path().string());
         index++;
     }
 
-    std::cout << "Enter the index of the file to load: ";
+    cout << "Enter the index of the file to load: ";
     int fileIndex;
-    std::cin >> fileIndex;
+    cin >> fileIndex;
 
     if (fileIndex >= 0 && fileIndex < files.size()) {
-        const std::string fileName = files[fileIndex];
+        const string fileName = files[fileIndex];
         Universe* newUniverse = UniverseImporter::importFromFile(fileName);
         if (newUniverse) {
             delete _universe;
             _universe = newUniverse;
             _simulationView->display(*_universe);
-            std::cout << "Universe loaded from " << fileName << std::endl;
+            cout << "Universe loaded from " << fileName << endl;
         } else {
-            std::cout << "Error: Could not load universe from " << fileName << std::endl;
+            cout << "Error: Could not load universe from " << fileName << endl;
         }
     } else {
-        std::cout << "Invalid index" << std::endl;
+        cout << "Invalid index" << endl;
     }
 
     pause();
