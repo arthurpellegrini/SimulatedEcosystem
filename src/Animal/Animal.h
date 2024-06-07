@@ -14,6 +14,10 @@ public:
 
     virtual ~Animal();
 
+    void move();
+    bool canMove() const;
+    void resetCanMove();
+
     void increaseAge();
     bool isDead() const;
 
@@ -21,19 +25,31 @@ public:
     void decreaseSatiety();
 
     bool canBreed(const Animal &animal) const;
+    void breed();
 
     virtual string display() const = 0;
 
+    bool isBreeding() const;
+    void setIsBreeding(bool isBreeding);
+
     int getAge() const;
+    static int getAdultAge();
+
     int getSatiety() const;
     Gender getGender() const;
 
 protected:
     int _age;
     Gender _gender;
+
+    bool _canMove = true;
     int _satiety;
     int _maxSatiety;
     int _lifespan;
+    bool _isBreeding = false;
+    int _lastBreed = -1;
+    static const int _breedCooldown;
+    static const int _adultAge;
 };
 
 ostream& operator<<(ostream &os, const Animal &animal);
