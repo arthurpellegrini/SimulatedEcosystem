@@ -9,6 +9,8 @@ public:
     explicit Wolf(Gender gender);
     Wolf(Gender gender, int age, int satiety);
 
+    static int getFOV();
+
     string display() const override;
 
 private:

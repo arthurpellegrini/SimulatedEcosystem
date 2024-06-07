@@ -9,6 +9,8 @@ public:
     explicit Sheep(Gender gender);
     Sheep(Gender gender, int age, int satiety);
 
+    static int getFOV();
+
     string display() const override;
 
 private:

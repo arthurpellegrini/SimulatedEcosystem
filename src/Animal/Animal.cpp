@@ -1,7 +1,5 @@
 #include "Animal.h"
 
-int Animal::_fov = 1;
-
 Animal::Animal(const Gender gender, const int adultAge, const int lifespan, const int maxSatiety, const int cooldown)
     : Animal(gender, 0, adultAge, lifespan,  maxSatiety, maxSatiety, cooldown) {}
 
@@ -79,7 +77,6 @@ Gender Animal::getGender() const { return _gender; }
 int Animal::getAge() const { return _age; }
 int Animal::getAdultAge() const { return _adultAge; }
 int Animal::getSatiety() const { return _satiety; }
-int Animal::getFOV() { return _fov; }
 
 ostream& operator<<(ostream &os, const Animal &animal) {
     return os << animal.display();
