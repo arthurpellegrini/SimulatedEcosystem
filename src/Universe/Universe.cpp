@@ -239,7 +239,8 @@ void Universe::processWolf(const int x, const int y) {
         Cell& nextCell = _cells[position[0]][position[1]];
         // TODO: Remove this debug message
         // cout << positionToString(position[0], position[1]) << "A wolf came from " + positionToString(x, y));
-        addMessage({position[0], position[1]}, "A wolf moves");
+        if (position[0] != x || position[1] != y)
+            addMessage({position[0], position[1]}, "A wolf moves");
 
         if(nextCell.hasSheep()) {
             nextCell.removeAnimal();
@@ -275,7 +276,8 @@ void Universe::processSheep(const int x, const int y) {
         Cell& nextCell = _cells[position[0]][position[1]];
         // TODO: Remove this debug message
         // cout << positionToString(position[0], position[1]) << "A sheep came from " + positionToString(x, y));
-        addMessage({position[0], position[1]}, "A sheep moves");
+        if (position[0] != x || position[1] != y)
+            addMessage({position[0], position[1]}, "A sheep moves");
 
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
