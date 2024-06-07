@@ -12,113 +12,81 @@
 Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
 }
 
-Universe::Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity) : _size(size), _generations(0), _sheepQuantity(sheepQuantity), _wolfQuantity(wolfQuantity) {
+Universe::Universe(const vector<int>& size, const int sheepQuantity, const int wolfQuantity) :
+    _size(size),
+    _sheepQuantity(sheepQuantity),
+    _wolfQuantity(wolfQuantity),
+    _generations(0)
+{
     _cells.resize(_size[0], vector<Cell>(_size[1]));
-    _nextCells.resize(_size[0], vector<Cell>(_size[1]));
 
     generateRandomUniverse();
 }
 
-void Universe::generateRandomUniverse() {
+void Universe::generateRandomUniverse()
+{
     srand(static_cast<unsigned>(time(nullptr)));
 
-    const int totalCells = _size[0] * _size[1];
-    const int totalAnimals = _sheepQuantity + _wolfQuantity;
-
-    if (totalAnimals > totalCells) {
+    if (_sheepQuantity + _wolfQuantity > _size[0] * _size[1]) {
         throw invalid_argument("The number of animals is greater than the number of cells");
     }
 
-    for (int x = 0; x < _size[0]; ++x) {
-        for (int y = 0; y < _size[1]; ++y) {
-            _cells[x][y].addNaturalElement(make_unique<Grass>());
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            _cells[i][j].addNaturalElement(make_unique<Grass>());
         }
     }
 
+    vector<int> position;
+
     for (int i = 0; i < _wolfQuantity; ++i) {
-        auto wolf = make_unique<Wolf>(randomGender());
-        placeRandomAnimal(move(wolf));
+        position = randomAnimalPosition();
+        _cells[position[0]][position[1]].addAnimal(make_unique<Wolf>(randomGender()));
     }
 
     for (int i = 0; i < _sheepQuantity; ++i) {
-        auto sheep = make_unique<Sheep>(randomGender());
-        placeRandomAnimal(move(sheep));
+        position = randomAnimalPosition();
+        _cells[position[0]][position[1]].addAnimal(make_unique<Sheep>(randomGender()));
     }
 }
 
-Gender Universe::randomGender() {
-    return rand() % 2 == 0 ? Gender::Male : Gender::Female;
-}
-
-void Universe::placeRandomAnimal(unique_ptr<Animal> animal) {
+vector<int> Universe::randomAnimalPosition() const {
     int x, y;
     do {
         x = rand() % _size[0];
         y = rand() % _size[1];
     } while (_cells[x][y].hasAnimal());
 
-    _cells[x][y].addAnimal(move(animal));
-}
-
-void Universe::placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element) {
-    int x, y;
-    do {
-        x = rand() % _size[0];
-        y = rand() % _size[1];
-    } while (_cells[x][y].hasNaturalElement());
-
-    _cells[x][y].addNaturalElement(move(natural_element));
+    return {x, y};
 }
 
 void Universe::nextGeneration() {
-    for (int i = 0; i < _size[0]; ++i) {
-        for (int j = 0; j < _size[1]; ++j) {
-            processNaturalElement(i, j);
-        }
-    }
-
+    processNaturalElements();
     processAnimals();
 
     _cells = move(_nextCells);
-    _nextCells.resize(_size[0], vector<Cell>(_size[1]));
-
-    // for (int i = 0; i < _size[0]; ++i) {
-    //     for (int j = 0; j < _size[1]; ++j) {
-    //         processAnimalBreed(i, j);
-    //     }
-    // }
-
     _generations++;
 }
 
-void Universe::processNaturalElement(int x, int y) {
-    Cell& cell = _cells[x][y];
-
-    if (cell.hasGrass()) {
-        processGrass(x, y);
-    } else if (cell.hasSaltMinerals()) {
-        processSaltMinerals(x, y);
+void Universe::processNaturalElements() {
+    for (int i = 0; i < _size[0]; ++i) {
+        for (int j = 0; j < _size[1]; ++j) {
+            if (_cells[i][j].hasSaltMinerals()) {
+                processSaltMinerals(i, j);
+            }
+        }
     }
 }
 
+void Universe::processSaltMinerals(const int x, const int y) {
+    NaturalElement* naturalElement = _cells[x][y].getNaturalElement();
+    SaltMinerals& saltMinerals = *dynamic_cast<SaltMinerals*>(naturalElement);
+    saltMinerals.incrementAge();
 
-void Universe::processGrass(int x, int y) {
-    Grass* grass = dynamic_cast<Grass*>(_cells[x][y].getNaturalElement());
-    _nextCells[x][y].addNaturalElement(make_unique<Grass>(*grass));
-    _cells[x][y].removeNaturalElement();
-}
-
-void Universe::processSaltMinerals(int x, int y) {
-    SaltMinerals* saltMinerals = dynamic_cast<SaltMinerals*>(_cells[x][y].getNaturalElement());
-    saltMinerals->incrementAge();
-
-    if (saltMinerals->shouldTransform()) {
-        _nextCells[x][y].addNaturalElement(make_unique<Grass>());
-    } else {
-        _nextCells[x][y].addNaturalElement(make_unique<SaltMinerals>(*saltMinerals));
+    if (saltMinerals.shouldTransform()) {
+        _cells[x][y].removeNaturalElement();
+        _cells[x][y].addNaturalElement(make_unique<Grass>());
     }
-
-    _cells[x][y].removeNaturalElement();
 }
 
 
@@ -201,24 +169,16 @@ void Universe::processSaltMinerals(int x, int y) {
 void Universe::processAnimals() {
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
-            Cell& cell = _cells[i][j];
-            if (cell.hasAnimal()) {
-                Animal* animal = cell.getAnimal();
-                if (dynamic_cast<Wolf*>(animal)) {
-                    processWolf(i, j);
-                }
+            if (_cells[i][j].hasWolf()) {
+                processWolf(i, j);
             }
         }
     }
 
     for (int i = 0; i < _size[0]; ++i) {
         for (int j = 0; j < _size[1]; ++j) {
-            Cell& cell = _cells[i][j];
-            if (cell.hasAnimal()) {
-                Animal* animal = cell.getAnimal();
-                if (dynamic_cast<Sheep*>(animal)) {
-                    processSheep(i, j);
-                }
+            if (_cells[i][j].hasSheep()) {
+                processSheep(i, j);
             }
         }
     }
@@ -237,11 +197,9 @@ void Universe::processSheep(int x, int y) {
 
         Cell& nextCell = getNextRandomSheepPosition(x, y);
 
-        if(nextCell.hasNaturalElement()) {
-            if(dynamic_cast<Grass*>(nextCell.getNaturalElement())) {
-                sheep.eat();
-                nextCell.removeNaturalElement();
-            }
+        if(nextCell.hasGrass()) {
+            sheep.eat();
+            nextCell.removeNaturalElement();
         }
         nextCell.addAnimal(make_unique<Sheep>(sheep));
     }
@@ -261,13 +219,10 @@ void Universe::processWolf(int x, int y) {
 
         Cell& nextCell = getNextRandomWolfPosition(x, y);
 
-        if(nextCell.hasAnimal()) {
-            if(dynamic_cast<Sheep*>(nextCell.getAnimal())) {
-                wolf.eat();
-                nextCell.removeAnimal();
-                _sheepQuantity--;
-                cout << "Wolf ate a sheep" << endl;
-            }
+        if(nextCell.hasSheep()) {
+            wolf.eat();
+            nextCell.removeAnimal();
+            _sheepQuantity--;
         }
         nextCell.addAnimal(make_unique<Wolf>(wolf));
     }

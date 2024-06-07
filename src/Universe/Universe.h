@@ -37,15 +37,22 @@ private:
     vector<vector<Cell>> _nextCells;
 
     void generateRandomUniverse();
-    static Gender randomGender();
-    void placeRandomAnimal(unique_ptr<Animal> animal);
+
+    vector<int> randomAnimalPosition() const;
+
+    vector<int> randomAnimalPosition(unique_ptr<Animal> animal) const;
     void placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element);
 
-    void processCell(int x, int y);
-
-    void processNaturalElement(int x, int y);
-    void processGrass(int x, int y);
+    void processNaturalElements();
     void processSaltMinerals(int x, int y);
+
+    void processAnimalBreed(int x, int y);
+    void processSheepBreed(int x, int y);
+    void processWolfBreed(int x, int y);
+
+    void processAnimals();
+
+    bool placeRandomBabyAnimal(int x, int y, unique_ptr<Animal> animal);
 
     void processAnimal(int x, int y);
     void processSheep(int x, int y);
