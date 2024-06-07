@@ -63,18 +63,12 @@ void Animal::updateBreedCooldown()
         }
     }
 }
-bool Animal::canBreed(const Animal &animal) const {
-    if (_age > _adultAge && animal._age > animal.getAdultAge())
-    {
-        if (_gender == Gender::Female && animal.getGender() == Gender::Male)
-        {
-            if (_canBreed && animal._canBreed)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
+bool Animal::canBreed() const
+{
+    return _canBreed && _age > _adultAge;
+}
+bool Animal::canBreedWith(const Animal &animal) const {
+    return canBreed() && animal.canBreed() && (_gender == Gender::Female && animal.getGender() == Gender::Male);
 }
 
 Gender Animal::getGender() const { return _gender; }

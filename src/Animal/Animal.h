@@ -27,7 +27,8 @@ public:
 
     void breed();
     void updateBreedCooldown();
-    bool canBreed(const Animal &animal) const;
+    bool canBreed() const;
+    bool canBreedWith(const Animal &animal) const;
 
     Gender getGender() const;
     int getAge() const;
