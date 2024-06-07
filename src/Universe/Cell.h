@@ -22,7 +22,11 @@ public:
 
     bool isEmpty() const;
     bool hasAnimal() const;
+    bool hasSheep() const;
+    bool hasWolf() const;
     bool hasNaturalElement() const;
+    bool hasGrass() const;
+    bool hasSaltMinerals() const;
 
     vector<int> getPosition() const;
     Animal* getAnimal() const;

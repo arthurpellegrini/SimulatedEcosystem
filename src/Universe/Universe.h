@@ -1,6 +1,7 @@
 #ifndef UNIVERSE_H
 #define UNIVERSE_H
 
+#include <map>
 #include <vector>
 #include "Cell.h"
 
@@ -13,13 +14,14 @@ public:
     Universe(const vector<int>& size, int sheepQuantity, int wolfQuantity);
 
     void nextGeneration();
-    bool isDead();
-    int getGenerations();
+    bool isDead() const;
+    int getGenerations() const;
 
     vector<vector<Cell>>& getCells();
     Cell& getCell(const std::pair<int, int>& coordinates);
-    int getSheepQuantity();
-    int getWolfQuantity();
+    vector<string> getMessages(int generation);
+    int getSheepQuantity() const;
+    int getWolfQuantity() const;
 
     void setSheepQuantity(int sheepQuantity);
     void setWolfQuantity(int wolfQuantity);
@@ -30,29 +32,33 @@ private:
 
     int _sheepQuantity;
     int _wolfQuantity;
-
     int _generations;
 
     vector<vector<Cell>> _cells;
-    vector<vector<Cell>> _nextCells;
+    vector<pair<int, map<string, vector<pair<int, int>>>>> _messages;
 
     void generateRandomUniverse();
-    static Gender randomGender();
-    void placeRandomAnimal(unique_ptr<Animal> animal);
-    void placeRandomNaturalElement(unique_ptr<NaturalElement> natural_element);
 
-    void processCell(int x, int y);
+    vector<int> randomAnimalPosition() const;
 
-    void processNaturalElement(int x, int y);
-    void processGrass(int x, int y);
+    void processNaturalElements();
     void processSaltMinerals(int x, int y);
 
-    void processAnimal(int x, int y);
-    void processSheep(int x, int y);
-    void processWolf(int x, int y);
+    // void processAnimalBreed(int x, int y);
+    // void processSheepBreed(int x, int y);
+    // void processWolfBreed(int x, int y);
+    // bool placeRandomBabyAnimal(int x, int y, unique_ptr<Animal> animal);
 
-    Cell& getNextRandomSheepPosition(int x, int y);
-    Cell& getNextRandomWolfPosition(int x, int y);
+    void processAnimals();
+    void processWolf(int x, int y);
+    void processSheep(int x, int y);
+
+    vector<int> randomWolfPosition(int x, int y);
+    vector<int> randomSheepPosition(int x, int y);
+
+    string positionToString(int x, int y);
+
+    void addMessage(const pair<int, int>& coordinates, const string &message);
 };
 
 #endif // UNIVERSE_H

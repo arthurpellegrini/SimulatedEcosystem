@@ -14,7 +14,7 @@ Simulation::Simulation() : _universe(nullptr), _isPaused(false), _isStopped(fals
     _simulationView = new SimulationView();
     // const auto dimensions = simulationView->requestDimensions();
     try {
-        _universe = new Universe(_dimensions, 20, 2);
+        _universe = new Universe(_dimensions, 50, 50);
     } catch (const std::exception& e) {
         std::cerr << "Error : " << e.what() << '\n';
     }

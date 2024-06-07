@@ -6,4 +6,6 @@ enum class Gender {
     Female
 };
 
+Gender randomGender();
+
 #endif //GENDER_H

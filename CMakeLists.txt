@@ -16,4 +16,5 @@ add_executable(SimulatedEcosystem main.cpp
         src/Animal/Sheep.cpp
         src/Save/UniverseExporter.cpp
         src/Save/UniverseImporter.h
-        src/Save/UniverseImporter.cpp)
+        src/Save/UniverseImporter.cpp
+        src/Animal/Gender.cpp)
