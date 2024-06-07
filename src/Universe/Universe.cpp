@@ -1,15 +1,15 @@
 #include "Universe.h"
 
-#include <algorithm>
 #include <cmath>
-#include <iterator>
+#include <algorithm>
 #include <random>
+#include <iterator>
 #include <sstream>
 
-#include "../Entity/Animal/Wolf.h"
-#include "../Entity/Animal/Sheep.h"
-#include "../Entity/NaturalElement/Grass.h"
-#include "../Entity/NaturalElement/SaltMinerals.h"
+#include "../Animal/Wolf.h"
+#include "../Animal/Sheep.h"
+#include "../NaturalElement/Grass.h"
+#include "../NaturalElement/SaltMinerals.h"
 
 
 Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
@@ -63,8 +63,8 @@ vector<int> Universe::randomAnimalPosition() const {
     return {x, y};
 }
 
-map<pair<int, int>, Entity*> Universe::neighboor(const int x, const int y) {
-    map<pair<int, int>, Entity*> neighbors;
+map<pair<int, int>, Cell *> Universe::neighboor(const int x, const int y) {
+    map<pair<int, int>, Cell*> neighbors;
 
     const vector<pair<int, int>> moves = {
         {-1, -1}, {-1, 0}, {-1, 1},
@@ -77,13 +77,7 @@ map<pair<int, int>, Entity*> Universe::neighboor(const int x, const int y) {
         int ny = y + move.second;
 
         if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
-            Cell& cell = _cells[nx][ny];
-
-            if (cell.hasAnimal()) {
-                neighbors[{nx, ny}] = cell.getAnimal();
-            } else if (cell.hasNaturalElement()) {
-                neighbors[{nx, ny}] = cell.getNaturalElement();
-            }
+            neighbors[{nx, ny}] = &_cells[nx][ny];
         }
     }
 
@@ -290,42 +284,61 @@ void Universe::processSheep(const int x, const int y) {
 }
 
 vector<int> Universe::randomWolfPosition(int x, int y) {
-    vector <pair<int, int>> possibleMoves = {
-        {x-1, y-1}, {x-1, y}, {x-1, y+1},
-        {x, y-1}, {x, y+1},
-        {x+1, y-1}, {x+1, y}, {x+1, y+1}
-    };
+    map<pair<int, int>, Cell*> possibleMoves = neighboor(x, y);
 
-    shuffle(possibleMoves.begin(), possibleMoves.end(), default_random_engine(rand()));
+    vector<pair<int, int>> positions;
+    for (const auto& move : possibleMoves) {
+        positions.push_back(move.first);
+    }
 
-    for(auto displacement : possibleMoves) {
-        // If in the grid
+    shuffle(positions.begin(), positions.end(), default_random_engine(rand()));
+
+    for(auto displacement : positions) {
         if(displacement.first >= 0 && displacement.first < _size[0] && displacement.second >= 0 && displacement.second < _size[1]) {
-            // If there is no animals
             Cell& cell = _cells[displacement.first][displacement.second];
-            if(!cell.hasWolf() || cell.hasSheep()) {
+            if(cell.hasSheep()) { // Prioritize cells with sheep
                 return {displacement.first, displacement.second};
             }
         }
     }
+
+    // If no cell with a sheep is found, return a random position
+    for(auto displacement : positions) {
+        if(displacement.first >= 0 && displacement.first < _size[0] && displacement.second >= 0 && displacement.second < _size[1]) {
+            Cell& cell = _cells[displacement.first][displacement.second];
+            if(!cell.hasWolf()) {
+                return {displacement.first, displacement.second};
+            }
+        }
+    }
+
     return {x, y};
 }
 
 vector<int> Universe::randomSheepPosition(int x, int y) {
-    vector <pair<int, int>> possibleMoves = {
-        {x-1, y-1}, {x-1, y}, {x-1, y+1},
-        {x, y-1}, {x, y+1},
-        {x+1, y-1}, {x+1, y}, {x+1, y+1}
-    };
+    map<pair<int, int>, Cell*> possibleMoves = neighboor(x, y);
 
-    // random_shuffle(possibleMoves.begin(), possibleMoves.end());
-    shuffle(possibleMoves.begin(), possibleMoves.end(), default_random_engine(rand()));
+    vector<pair<int, int>> positions;
+    for (const auto& move : possibleMoves) {
+        positions.push_back(move.first);
+    }
 
-    for(auto displacement : possibleMoves) {
-        // If in the grid
+    shuffle(positions.begin(), positions.end(), default_random_engine(rand()));
+
+    for(auto displacement : positions) {
         if(displacement.first >= 0 && displacement.first < _size[0] && displacement.second >= 0 && displacement.second < _size[1]) {
-            // If there is no animals
-            if(!_cells[displacement.first][displacement.second].hasAnimal()) {
+            Cell& cell = _cells[displacement.first][displacement.second];
+            if(cell.hasGrass() && !cell.hasAnimal()) { // Prioritize cells with grass
+                return {displacement.first, displacement.second};
+            }
+        }
+    }
+
+    // If no cell with grass is found, return a random position
+    for(auto displacement : positions) {
+        if(displacement.first >= 0 && displacement.first < _size[0] && displacement.second >= 0 && displacement.second < _size[1]) {
+            Cell& cell = _cells[displacement.first][displacement.second];
+            if(!cell.hasAnimal()) {
                 return {displacement.first, displacement.second};
             }
         }
@@ -473,7 +486,7 @@ vector<int> Universe::randomSheepPosition(int x, int y) {
 // }
 
 string Universe::positionToString(const int x, const int y) {
-    char letter = 'A' + x;
+    const char letter = 'A' + x;
     return string(1, letter) + to_string(y);
 }
 

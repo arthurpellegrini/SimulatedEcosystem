@@ -1,10 +1,10 @@
 #include "Cell.h"
 
 
-#include "../Entity/Animal/Sheep.h"
-#include "../Entity/Animal/Wolf.h"
-#include "../Entity/NaturalElement/Grass.h"
-#include "../Entity/NaturalElement/SaltMinerals.h"
+#include "../Animal/Sheep.h"
+#include "../Animal/Wolf.h"
+#include "../NaturalElement/Grass.h"
+#include "../NaturalElement/SaltMinerals.h"
 
 
 Cell::Cell(const vector<int>& position) :
