@@ -12,7 +12,7 @@ using namespace std;
 
 class Cell {
 public:
-    Cell(const vector<int>& position = {0, 0});
+    explicit Cell(const vector<int>& position = {0, 0});
 
     void addAnimal(unique_ptr<Animal> animal);
     void removeAnimal();
