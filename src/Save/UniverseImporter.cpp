@@ -6,10 +6,10 @@
 #include <sstream>
 #include <limits>
 #include "UniverseImporter.h"
-#include "../NaturalElement/Grass.h"
-#include "../NaturalElement/SaltMinerals.h"
-#include "../Animal/Sheep.h"
-#include "../Animal/Wolf.h"
+#include "../Entity/NaturalElement/Grass.h"
+#include "../Entity/NaturalElement/SaltMinerals.h"
+#include "../Entity/Animal/Sheep.h"
+#include "../Entity/Animal/Wolf.h"
 
 Universe* UniverseImporter::importFromFile(const std::string &filename) {
 

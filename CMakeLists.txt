@@ -8,13 +8,14 @@ add_executable(SimulatedEcosystem main.cpp
         src/Simulation/Simulation.cpp
         src/Simulation/SimulationView.cpp
         src/Universe/Cell.cpp
-        src/NaturalElement/NaturalElement.cpp
-        src/Animal/Animal.cpp
-        src/NaturalElement/Grass.cpp
-        src/NaturalElement/SaltMinerals.cpp
-        src/Animal/Wolf.cpp
-        src/Animal/Sheep.cpp
+        src/Entity/NaturalElement/NaturalElement.cpp
+        src/Entity/Animal/Animal.cpp
+        src/Entity/NaturalElement/Grass.cpp
+        src/Entity/NaturalElement/SaltMinerals.cpp
+        src/Entity/Animal/Wolf.cpp
+        src/Entity/Animal/Sheep.cpp
         src/Save/UniverseExporter.cpp
         src/Save/UniverseImporter.h
         src/Save/UniverseImporter.cpp
-        src/Animal/Gender.cpp)
+        src/Entity/Animal/Gender.cpp
+        src/Entity/Entity.cpp)

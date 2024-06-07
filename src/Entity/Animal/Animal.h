@@ -4,10 +4,11 @@
 #include <iostream>
 #include <string>
 #include "Gender.h"
+#include "../Entity.h"
 
 using namespace std;
 
-class Animal {
+class Animal : public Entity {
 public:
     Animal(Gender gender, int maxSatiety, int lifespan);
     Animal(Gender gender, int maxSatiety, int lifespan, int age, int satiety);
@@ -27,8 +28,6 @@ public:
 
     bool canBreed(const Animal &animal) const;
     void breed();
-
-    virtual string display() const = 0;
 
     bool isBreeding() const;
     void setIsBreeding(bool isBreeding);

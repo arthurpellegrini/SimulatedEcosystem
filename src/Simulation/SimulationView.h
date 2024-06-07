@@ -3,10 +3,8 @@
 
 #include <vector>
 #include <string>
-#include "../Universe/Cell.h"
 #include "../Universe/Universe.h"
 #include "Center.h"
-
 
 using namespace std;
 

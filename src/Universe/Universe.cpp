@@ -6,10 +6,10 @@
 #include <random>
 #include <sstream>
 
-#include "../Animal/Wolf.h"
-#include "../Animal/Sheep.h"
-#include "../NaturalElement/Grass.h"
-#include "../NaturalElement/SaltMinerals.h"
+#include "../Entity/Animal/Wolf.h"
+#include "../Entity/Animal/Sheep.h"
+#include "../Entity/NaturalElement/Grass.h"
+#include "../Entity/NaturalElement/SaltMinerals.h"
 
 
 Universe::Universe(const vector<int>& size) : Universe(size, 0, 0){
@@ -61,6 +61,37 @@ vector<int> Universe::randomAnimalPosition() const {
     } while (_cells[x][y].hasAnimal());
 
     return {x, y};
+}
+
+map<pair<int, int>, Entity*> Universe::neighboor(int x, int y) {
+    map<pair<int, int>, Entity*> neighbors;
+
+    // Define the possible moves to the neighboring cells
+    vector<pair<int, int>> moves = {
+        {-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1},           {0, 1},
+        {1, -1}, {1, 0}, {1, 1}
+    };
+
+    // Iterate over the neighboring cells
+    for (const auto& move : moves) {
+        int nx = x + move.first;
+        int ny = y + move.second;
+
+        // Check if the neighboring cell is within the grid
+        if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
+            Cell& cell = _cells[nx][ny];
+
+            // Check if the cell has an animal or a natural element
+            if (cell.hasAnimal()) {
+                neighbors[{nx, ny}] = cell.getAnimal();
+            } else if (cell.hasNaturalElement()) {
+                neighbors[{nx, ny}] = cell.getNaturalElement();
+            }
+        }
+    }
+
+    return neighbors;
 }
 
 void Universe::nextGeneration() {

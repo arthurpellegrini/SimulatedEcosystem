@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include "Cell.h"
+#include "../Entity/Entity.h"
 
 using namespace std;
 
@@ -40,6 +41,8 @@ private:
     void generateRandomUniverse();
 
     vector<int> randomAnimalPosition() const;
+
+    map<pair<int, int>, Entity *> neighboor(int x, int y);
 
     void processNaturalElements();
     void processSaltMinerals(int x, int y);
