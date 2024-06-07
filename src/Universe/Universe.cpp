@@ -63,26 +63,22 @@ vector<int> Universe::randomAnimalPosition() const {
     return {x, y};
 }
 
-map<pair<int, int>, Entity*> Universe::neighboor(int x, int y) {
+map<pair<int, int>, Entity*> Universe::neighboor(const int x, const int y) {
     map<pair<int, int>, Entity*> neighbors;
 
-    // Define the possible moves to the neighboring cells
-    vector<pair<int, int>> moves = {
+    const vector<pair<int, int>> moves = {
         {-1, -1}, {-1, 0}, {-1, 1},
         {0, -1},           {0, 1},
         {1, -1}, {1, 0}, {1, 1}
     };
 
-    // Iterate over the neighboring cells
     for (const auto& move : moves) {
         int nx = x + move.first;
         int ny = y + move.second;
 
-        // Check if the neighboring cell is within the grid
         if (nx >= 0 && nx < _size[0] && ny >= 0 && ny < _size[1]) {
             Cell& cell = _cells[nx][ny];
 
-            // Check if the cell has an animal or a natural element
             if (cell.hasAnimal()) {
                 neighbors[{nx, ny}] = cell.getAnimal();
             } else if (cell.hasNaturalElement()) {

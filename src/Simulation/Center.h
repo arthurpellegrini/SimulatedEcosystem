@@ -11,7 +11,7 @@ template<typename charT, typename traits = char_traits<charT> >
 class Center {
     std::basic_string<charT, traits> str_;
 public:
-    Center(std::basic_string<charT, traits> str);
+    explicit Center(std::basic_string<charT, traits> str);
     template<typename a, typename b>
     friend std::basic_ostream<a, b>& operator<<(basic_ostream<a, b>& s, const Center<a, b>& c);
 };

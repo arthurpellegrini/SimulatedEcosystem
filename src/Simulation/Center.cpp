@@ -1,3 +1,5 @@
+#include "Center.h"
+
 template<typename charT, typename traits>
 Center<charT, traits>::Center(std::basic_string<charT, traits> str) : str_(str) {}
 
