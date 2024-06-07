@@ -1,6 +1,7 @@
 #ifndef UNIVERSE_H
 #define UNIVERSE_H
 
+#include <map>
 #include <vector>
 #include "Cell.h"
 
@@ -34,7 +35,7 @@ private:
     int _generations;
 
     vector<vector<Cell>> _cells;
-    vector<pair<int, vector<pair<vector<string>, string>>>> _messages;
+    vector<pair<int, map<string, vector<pair<int, int>>>>> _messages;
 
     void generateRandomUniverse();
 

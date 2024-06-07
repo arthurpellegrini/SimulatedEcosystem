@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iterator>
 #include <random>
+#include <sstream>
 
 #include "../Animal/Wolf.h"
 #include "../Animal/Sheep.h"
@@ -86,7 +88,7 @@ void Universe::processSaltMinerals(const int x, const int y) {
     if (saltMinerals.shouldTransform()) {
         _cells[x][y].removeNaturalElement();
         _cells[x][y].addNaturalElement(make_unique<Grass>());
-        addMessage({x, y}, "Grass grew again.");
+        addMessage({x, y}, "Grass grew again");
     }
 }
 
@@ -197,16 +199,16 @@ void Universe::processWolf(const int x, const int y) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _wolfQuantity--;
-        addMessage({x, y},"A wolf died naturally.");
+        addMessage({x, y},"A wolf died naturally");
         //TODO : Différencier OldAge et Hunger
     } else {
         wolf.decreaseSatiety();
 
         const vector<int> position = randomWolfPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        const string nextPos = positionToString(position[0], position[1]);
-        //TODO: Remove this debug message
-        // addMessage({position[0], position[1]}, "A wolf came from " + positionToString(x, y));
+        // TODO: Remove this debug message
+        // cout << positionToString(position[0], position[1]) << "A wolf came from " + positionToString(x, y));
+        addMessage({position[0], position[1]}, "A wolf moves");
 
         if(nextCell.hasSheep()) {
             nextCell.removeAnimal();
@@ -229,16 +231,16 @@ void Universe::processSheep(const int x, const int y) {
         _cells[x][y].addNaturalElement(make_unique<SaltMinerals>());
         _cells[x][y].removeAnimal();
         _sheepQuantity--;
-        addMessage({x, y}, "A sheep died naturally.");
-        //TODO : Différencier OldAge et Hunger
+        addMessage({x, y}, "A sheep died naturally");
+        // TODO : Différencier OldAge et Hunger
     } else {
         sheep.decreaseSatiety();
 
         const vector<int> position = randomSheepPosition(x, y);
         Cell& nextCell = _cells[position[0]][position[1]];
-        const string nextPos = positionToString(position[0], position[1]);
-        //TODO: Remove this debug message
-        // addMessage({position[0], position[1]}, "A sheep came from " + positionToString(x, y));
+        // TODO: Remove this debug message
+        // cout << positionToString(position[0], position[1]) << "A sheep came from " + positionToString(x, y));
+        addMessage({position[0], position[1]}, "A sheep moves");
 
         if(nextCell.hasGrass()) {
             nextCell.removeNaturalElement();
@@ -442,29 +444,33 @@ void Universe::addMessage(const pair<int, int>& coordinates, const string &messa
     if (_messages.empty() || _messages.back().first != _generations) {
         _messages.push_back({_generations, {}});
     }
-    string coordString = "[" + positionToString(coordinates.first, coordinates.second) + "]";
-    for(auto& msg : _messages.back().second) {
-        if(msg.second == message) {
-            msg.first.push_back(coordString);
-            return;
-        }
-    }
-    _messages.back().second.push_back({{coordString}, message});
+    _messages.back().second[message].push_back(coordinates);
+}
+
+string join(const vector<string>& vec, const char* delim)
+{
+    stringstream res;
+    copy(vec.begin(), vec.end(), ostream_iterator<string>(res, delim));
+    string result = res.str();
+    return result.substr(0, result.length() - 2);  // enlève le délimiteur en trop à la fin
 }
 
 vector<string> Universe::getMessages(const int generation) {
     vector<string> result;
-    for (const auto& pair : _messages) {
-        if (pair.first == generation) {
-            for (const auto& msg : pair.second) {
-                for (const auto& coord : msg.first) {
-                    result.push_back(coord + " " + msg.second);
+    for (const auto& gen_messages : _messages) {
+        if (gen_messages.first == generation) {
+            for (const auto& msg : gen_messages.second) {
+                vector<string> coords;
+                for (const auto& coord : msg.second) {
+                    coords.push_back(positionToString(coord.first, coord.second));
                 }
+                string message = msg.first + " [" + join(coords, ", ") + "]";
+                result.push_back(message);
             }
-            return result;
+            break;
         }
     }
-    return {};
+    return result;
 }
 
 int Universe::getGenerations() const {
