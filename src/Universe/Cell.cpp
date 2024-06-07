@@ -1,5 +1,10 @@
 #include "Cell.h"
+
+
+#include "../Animal/Sheep.h"
+#include "../Animal/Wolf.h"
 #include "../NaturalElement/Grass.h"
+#include "../NaturalElement/SaltMinerals.h"
 
 
 Cell::Cell(const vector<int>& position) :
@@ -43,8 +48,24 @@ bool Cell::hasAnimal() const {
     return _animal!=nullptr;
 }
 
+bool Cell::hasSheep() const {
+    return hasAnimal() && dynamic_cast<Sheep*>(_animal.get())!=nullptr;
+}
+
+bool Cell::hasWolf() const {
+    return hasAnimal() && dynamic_cast<Wolf*>(_animal.get())!=nullptr;
+}
+
 bool Cell::hasNaturalElement() const {
     return _natural_element!=nullptr;
+}
+
+bool Cell::hasGrass() const {
+    return hasNaturalElement() && dynamic_cast<Grass*>(_natural_element.get())!=nullptr;
+}
+
+bool Cell::hasSaltMinerals() const {
+    return hasNaturalElement() && dynamic_cast<SaltMinerals*>(_natural_element.get())!=nullptr;
 }
 
 vector<int> Cell::getPosition() const {
