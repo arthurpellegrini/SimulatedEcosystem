@@ -78,7 +78,6 @@ int Animal::getAge() const { return _age; }
 int Animal::getAdultAge() const { return _adultAge; }
 int Animal::getSatiety() const { return _satiety; }
 
-
 ostream& operator<<(ostream &os, const Animal &animal) {
     return os << animal.display();
 }
