@@ -1,13 +1,14 @@
 #include "Wolf.h"
 
-
 const int Wolf::_maxSatiety = 10;
 const int Wolf::_lifespan = 60;
+const int Wolf::_adultAge = 8;
+const int Wolf::_cooldown = 4;
 
-
-Wolf::Wolf(Gender gender) : Animal(gender, _maxSatiety, _lifespan) {}
-Wolf::Wolf(Gender gender, int age, int satiety) : Animal(gender, _maxSatiety, _lifespan, age, satiety) {}
-
+Wolf::Wolf(const Gender gender)
+    : Animal(gender, _adultAge, _lifespan, _maxSatiety, _cooldown) {}
+Wolf::Wolf(const Gender gender, const int age, const int satiety)
+    : Animal(gender, age, _adultAge, _lifespan, satiety, _maxSatiety, _cooldown) {}
 
 string Wolf::display() const {
     return "W";
